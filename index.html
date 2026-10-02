@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F7F5F0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101114" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Trazo AR - Dibuja lo que quieras, trazo a trazo. Guía de dibujo con cámara y mesa de luz digital.">
+  <title>Trazo AR</title>
+  <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiVHJhem8gQVIiLCJzaG9ydF9uYW1lIjoiVHJhem8gQVIiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNGN0Y1RjAiLCJ0aGVtZV9jb2xvciI6IiNGRjZCMzUiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNuSUhacFpYZENiM2c5SnpBZ01UQXdJREl3TVRBd0lESXdNVEF3SnlCb1pXbG5hSFE5SWpzOEwzTjJaejQ4Y0dGMGFDQjRQU0l3TUNJZ1kyeGhjM005SW1WNVptbHRjeUk3Q2lBZ1BITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV6Y0dnNk1qQXdNQzloWTNOdmJXbHpjMXd2YzJoaGJtZGxjeTkwYjJ0bGNqNDhjR0YwYUVCMllXeDFaVDBpTVRJd0lqNDhjR0YwYUVkeVlYQnpaUzBpSXpBd01DSWdZM2s5SWpFeklqc0NMREFsT3lBaVBqeHdZWE56ZDI5eWEyVnlQU0l5TUNJZ1kyeGhjM005SW1WNVptbHRjeUk3Q2lBZ1BIUmxlSFFnWTJ4aGMzTTlJbVY1Wm1sdGN5STdDaUFnUEhSbGVIUWdhR1ZwWjJoMFBTSXhNREFsSWlCbWFXeHNQU0ppYkdGamF5STdDaUFnUEhSbGVIUWdhV1E5SW1oMGRIQTZMeTkzZDNjdWR6TXViR2x1WlM5amIyMHZjM1I1YkdWamIyNXZZV2d2YzJoaGJtZGxjeTkzYVhSbFpDOWlZV05yWjNKdmRYUTlNRHd2YzNSaGNuUTlJbXhwYzNSaGNuUTlNQ3dnSXpBd01DSWdZM2s5SWpFd0lqNDhMM04yWno0PSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+  <style>
+    :root {
+      --bg: #F7F5F0;
+      --text: #1B1B1F;
+      --accent: #FF6B35;
+      --secondary: #2E86AB;
+      --card: #FFFFFF;
+      --border: #E5E2DB;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --radius: 16px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #101114;
+        --text: #ECECEF;
+        --accent: #FF8A5B;
+        --secondary: #5BB5D6;
+        --card: #1C1C21;
+        --border: #2A2A30;
+        --shadow: 0 4px 20px rgba(0,0,0,0.4);
+      }
+    }
+    [data-theme="dark"] {
+      --bg: #101114;
+      --text: #ECECEF;
+      --accent: #FF8A5B;
+      --secondary: #5BB5D6;
+      --card: #1C1C21;
+      --border: #2A2A30;
+      --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    [data-theme="light"] {
+      --bg: #F7F5F0;
+      --text: #1B1B1F;
+      --accent: #FF6B35;
+      --secondary: #2E86AB;
+      --card: #FFFFFF;
+      --border: #E5E2DB;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      height: 100%;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+    button, input, select { font: inherit; color: inherit; }
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      min-height: 48px;
+      min-width: 48px;
+      border-radius: 12px;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    button:active { transform: scale(0.96); }
+    button:disabled { opacity: 0.5; pointer-events: none; }
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
+      overflow: hidden;
+    }
+    .screen.active { display: flex; }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      flex-shrink: 0;
+    }
+    .header h1 { font-size: 1.25rem; font-weight: 700; flex: 1; }
+    .btn-icon {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 12px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(255,107,53,0.35);
+    }
+    .btn-secondary {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-weight: 500;
+    }
+    .btn-block { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 16px; }
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 calc(8px + var(--safe-bottom));
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .bottom-nav button {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      color: var(--text);
+      opacity: 0.6;
+      min-height: 56px;
+    }
+    .bottom-nav button.active { opacity: 1; color: var(--accent); }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card-mode {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+      padding: 24px 16px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .card-mode:active { transform: scale(0.98); }
+    .card-mode svg { width: 80px; height: 80px; }
+    .card-mode h3 { font-size: 1.1rem; }
+    .card-mode p { font-size: 0.85rem; opacity: 0.7; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .logo svg { width: 40px; height: 40px; }
+    .logo span { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+    .tagline { font-size: 0.95rem; opacity: 0.7; margin-bottom: 20px; }
+    .privacy { font-size: 0.75rem; opacity: 0.5; text-align: center; margin-top: 16px; }
+    .thumbs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .thumb {
+      width: 72px; height: 72px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: var(--border);
+      flex-shrink: 0;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .thumb.selected { border-color: var(--accent); }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .slider-row label { flex: 0 0 110px; font-size: 0.85rem; }
+    .slider-row input[type="range"] { flex: 1; accent-color: var(--accent); height: 6px; }
+    .slider-row .val { flex: 0 0 36px; text-align: right; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      margin-bottom: 12px;
+    }
+    /* Editor */
+    #editorCanvasWrap {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      overflow: hidden;
+      min-height: 200px;
+    }
+    #editorCanvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .editor-controls {
+      max-height: 45vh;
+      overflow-y: auto;
+      padding: 12px 16px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+    }
+    /* Modo A - Cámara */
+    #modeAScreen { background: #000; }
+    #videoCam {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #guideCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #gridCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .floating-panel {
+      position: absolute;
+      bottom: calc(16px + var(--safe-bottom));
+      left: 12px;
+      right: 12px;
+      background: rgba(20,20,24,0.92);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 12px;
+      color: #fff;
+      z-index: 20;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+    .floating-panel.collapsed {
+      transform: translateY(calc(100% - 52px));
+    }
+    .floating-panel .panel-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .panel-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .panel-controls button {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .panel-controls button.active { background: var(--accent); }
+    .opacity-slider { width: 100%; margin: 8px 0; }
+    /* Modo B - Mesa de luz */
+    #modeBScreen { background: #fff; }
+    #lightCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .light-panel {
+      position: absolute;
+      top: calc(12px + var(--safe-top));
+      right: 12px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .light-panel button {
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hidden-ui .light-panel, .hidden-ui .floating-panel { opacity: 0; pointer-events: none; }
+    /* Overlay / Modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .overlay.active { display: flex; }
+    .modal {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 360px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal h2 { margin-bottom: 12px; }
+    .modal p { font-size: 0.9rem; line-height: 1.5; margin-bottom: 12px; opacity: 0.85; }
+    .toast {
+      position: fixed;
+      bottom: calc(80px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(20,20,24,0.95);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.25s;
+      z-index: 200;
+      pointer-events: none;
+      max-width: 90%;
+      text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .level-bubble {
+      position: absolute;
+      top: calc(60px + var(--safe-top));
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.5);
+      z-index: 15;
+      display: none;
+    }
+    .level-dot {
+      position: absolute;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #ff4444;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      transition: background 0.15s;
+    }
+    .level-dot.ok { background: #44ff66; }
+    .lang-switch, .theme-switch {
+      display: flex;
+      gap: 4px;
+      background: var(--border);
+      border-radius: 10px;
+      padding: 3px;
+    }
+    .lang-switch button, .theme-switch button {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      min-height: 32px;
+      min-width: auto;
+    }
+    .lang-switch button.active, .theme-switch button.active {
+      background: var(--card);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .compare-slider {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 4px;
+      background: var(--accent);
+      cursor: ew-resize;
+      z-index: 5;
+    }
+    .crop-overlay {
+      position: absolute;
+      border: 2px dashed var(--accent);
+      pointer-events: none;
+    }
+    @media (min-width: 768px) {
+      .content { max-width: 600px; margin: 0 auto; width: 100%; }
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== PANTALLA INICIO ========== -->
+  <div id="homeScreen" class="screen active">
+    <div class="content" style="padding-top:20px;">
+      <div class="logo">
+        <svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="var(--accent)"/><path d="M14 34V14h6l8 12V14h6v20h-6l-8-12v12h-6z" fill="#fff"/></svg>
+        <span>Trazo AR</span>
+      </div>
+      <p class="tagline" data-i18n="tagline">Dibuja lo que quieras, trazo a trazo.</p>
+
+      <div class="grid-2" style="margin-bottom:20px;">
+        <div class="card card-mode" id="btnModeA">
+          <svg viewBox="0 0 80 80" fill="none">
+            <rect x="28" y="8" width="24" height="40" rx="3" stroke="var(--text)" stroke-width="2"/>
+            <circle cx="40" cy="18" r="3" fill="var(--accent)"/>
+            <rect x="20" y="52" width="40" height="6" rx="1" fill="var(--secondary)" opacity="0.5"/>
+            <path d="M30 58 L30 70 M50 58 L50 70" stroke="var(--text)" stroke-width="2"/>
+            <rect x="22" y="70" width="36" height="4" rx="1" fill="var(--border)"/>
+          </svg>
+          <h3 data-i18n="modeA">Cámara arriba</h3>
+          <p data-i18n="modeADesc">Teléfono sobre el papel</p>
+        </div>
+        <div class="card card-mode" id="btnModeB">
+          <svg viewBox="0 0 80 80" fill="none">
+            <rect x="15" y="25" width="50" height="30" rx="3" fill="var(--secondary)" opacity="0.3" stroke="var(--text)" stroke-width="2"/>
+            <rect x="20" y="20" width="40" height="28" rx="2" fill="var(--card)" stroke="var(--accent)" stroke-width="2"/>
+            <path d="M25 30h30M25 36h20M25 42h25" stroke="var(--text)" stroke-width="1.5" opacity="0.5"/>
+          </svg>
+          <h3 data-i18n="modeB">Mesa de luz</h3>
+          <p data-i18n="modeBDesc">Papel sobre la pantalla</p>
+        </div>
+      </div>
+
+      <button class="btn-primary btn-block" id="btnUpload" style="margin-bottom:10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <span data-i18n="upload">Subir una foto</span>
+      </button>
+      <button class="btn-secondary btn-block" id="btnCapture" style="margin-bottom:20px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span data-i18n="takePhoto">Tomar una foto</span>
+      </button>
+
+      <h3 style="font-size:0.95rem;margin-bottom:10px;" data-i18n="recent">Mis dibujos recientes</h3>
+      <div class="thumbs" id="recentThumbs">
+        <p style="opacity:0.5;font-size:0.85rem;" data-i18n="noRecent">Aún no hay dibujos</p>
+      </div>
+
+      <button class="btn-secondary btn-block" id="btnHow" style="margin-top:16px;">
+        <span data-i18n="how">¿Cómo funciona?</span>
+      </button>
+
+      <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;">
+        <div class="lang-switch">
+          <button class="active" data-lang="es">ES</button>
+          <button data-lang="en">EN</button>
+        </div>
+        <div class="theme-switch">
+          <button data-theme="auto" class="active">Auto</button>
+          <button data-theme="light">☀</button>
+          <button data-theme="dark">☾</button>
+        </div>
+      </div>
+      <p class="privacy" data-i18n="privacy">Tus fotos nunca salen de tu teléfono.</p>
+    </div>
+    <nav class="bottom-nav">
+      <button class="active" data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg><span data-i18n="navHome">Inicio</span></button>
+      <button data-nav="gallery"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span data-i18n="navGallery">Galería</span></button>
+      <button data-nav="settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span data-i18n="navSettings">Ajustes</span></button>
+      <button data-nav="help"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-i18n="navHelp">Ayuda</span></button>
+    </nav>
+  </div>
+
+  <!-- ========== GALERÍA ========== -->
+  <div id="galleryScreen" class="screen">
+    <div class="header">
+      <button class="btn-icon" data-back><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1 data-i18n="gallery">Galería</h1>
+      <button class="btn-icon" id="btnAddMore"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="grid-2" id="galleryGrid" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr));"></div>
+      <p id="galleryEmpty" style="text-align:center;opacity:0.5;margin-top:40px;" data-i18n="emptyGallery">No hay imágenes. Sube o toma una foto.</p>
+    </div>
+    <nav class="bottom-nav">
+      <button data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg><span data-i18n="navHome">Inicio</span></button>
+      <button class="active" data-nav="gallery"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span data-i18n="navGallery">Galería</span></button>
+      <button data-nav="settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span data-i18n="navSettings">Ajustes</span></button>
+      <button data-nav="help"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-i18n="navHelp">Ayuda</span></button>
+    </nav>
+  </div>
+
+  <!-- ========== EDITOR ========== -->
+  <div id="editorScreen" class="screen">
+    <div class="header">
+      <button class="btn-icon" data-back><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1 data-i18n="editor">Editor</h1>
+      <button class="btn-icon" id="btnEditorDone" title="Listo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+    <div id="editorCanvasWrap">
+      <canvas id="editorCanvas"></canvas>
+    </div>
+    <div class="editor-controls">
+      <select id="styleSelect">
+        <option value="pencil" data-i18n="stylePencil">Boceto a lápiz</option>
+        <option value="lines" data-i18n="styleLines">Líneas (contorno)</option>
+        <option value="grayscale" data-i18n="styleGray">Sombras (escala de grises)</option>
+        <option value="threshold" data-i18n="styleThresh">Alto contraste (B/N)</option>
+        <option value="comic" data-i18n="styleComic">Cómic</option>
+        <option value="values" data-i18n="styleValues">Cuadrícula de valores</option>
+      </select>
+      <div class="slider-row"><label data-i18n="detail">Detalle</label><input type="range" id="sDetail" min="0" max="100" value="50"><span class="val">50</span></div>
+      <div class="slider-row"><label data-i18n="thickness">Grosor</label><input type="range" id="sThick" min="1" max="6" value="2"><span class="val">2</span></div>
+      <div class="slider-row"><label data-i18n="smooth">Suavizado</label><input type="range" id="sSmooth" min="0" max="10" value="3"><span class="val">3</span></div>
+      <div class="slider-row"><label data-i18n="brightness">Brillo</label><input type="range" id="sBright" min="-100" max="100" value="0"><span class="val">0</span></div>
+      <div class="slider-row"><label data-i18n="contrast">Contraste</label><input type="range" id="sContrast" min="-100" max="100" value="0"><span class="val">0</span></div>
+      <div class="slider-row"><label data-i18n="gamma">Gamma</label><input type="range" id="sGamma" min="50" max="200" value="100"><span class="val">1.0</span></div>
+      <div class="slider-row" id="rowThresh"><label data-i18n="threshold">Umbral</label><input type="range" id="sThresh" min="0" max="255" value="128"><span class="val">128</span></div>
+      <div class="slider-row" id="rowLevels"><label data-i18n="levels">Niveles</label><input type="range" id="sLevels" min="2" max="8" value="4"><span class="val">4</span></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn-secondary" id="btnInvert" style="flex:1;" data-i18n="invert">Invertir</button>
+        <button class="btn-secondary" id="btnReset" style="flex:1;" data-i18n="reset">Restablecer</button>
+        <button class="btn-primary" id="btnAuto" style="flex:1;" data-i18n="auto">Auto</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn-secondary" id="btnRotateL" style="flex:1;">↺ 90°</button>
+        <button class="btn-secondary" id="btnRotateR" style="flex:1;">↻ 90°</button>
+        <button class="btn-secondary" id="btnFlipH" style="flex:1;">↔</button>
+        <button class="btn-secondary" id="btnFlipV" style="flex:1;">↕</button>
+      </div>
+      <p id="detectLabel" style="font-size:0.8rem;opacity:0.6;margin-top:8px;text-align:center;"></p>
+    </div>
+  </div>
+
+  <!-- ========== MODO A ========== -->
+  <div id="modeAScreen" class="screen">
+    <video id="videoCam" playsinline muted autoplay></video>
+    <canvas id="guideCanvas"></canvas>
+    <canvas id="gridCanvas"></canvas>
+    <div class="level-bubble" id="levelBubble"><div class="level-dot" id="levelDot"></div></div>
+    <div class="floating-panel" id="panelA">
+      <button class="panel-toggle" id="togglePanelA">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+        <span data-i18n="controls">Controles</span>
+      </button>
+      <div class="panel-controls">
+        <button id="btnLockGuide" data-i18n="lock">🔒 Bloquear</button>
+        <button id="btnToggleGuide" data-i18n="toggleGuide">Guía</button>
+        <button id="btnGrid" data-i18n="grid">Cuadrícula</button>
+        <button id="btnFreeze" data-i18n="freeze">Congelar</button>
+        <button id="btnSwitchCam" data-i18n="switchCam">Cámara</button>
+        <button id="btnTorch" style="display:none;" data-i18n="torch">Linterna</button>
+        <button id="btnCaptureProgress" data-i18n="capture">Capturar</button>
+        <button id="btnExitA" data-i18n="exit">Salir</button>
+      </div>
+      <label style="font-size:0.8rem;display:block;margin-top:8px;" data-i18n="opacity">Opacidad guía</label>
+      <input type="range" class="opacity-slider" id="sOpacity" min="5" max="100" value="50">
+      <label style="font-size:0.8rem;display:block;" data-i18n="guideColor">Color guía</label>
+      <div style="display:flex;gap:6px;margin-top:4px;">
+        <button class="color-btn active" data-color="#ff0000" style="background:#ff0000;width:32px;height:32px;border-radius:50%;min-width:32px;min-height:32px;border:2px solid #fff;"></button>
+        <button class="color-btn" data-color="#0066ff" style="background:#0066ff;width:32px;height:32px;border-radius:50%;min-width:32px;min-height:32px;"></button>
+        <button class="color-btn" data-color="#00cc44" style="background:#00cc44;width:32px;height:32px;border-radius:50%;min-width:32px;min-height:32px;"></button>
+        <button class="color-btn" data-color="#ff8800" style="background:#ff8800;width:32px;height:32px;border-radius:50%;min-width:32px;min-height:32px;"></button>
+        <button class="color-btn" data-color="#000000" style="background:#000;width:32px;height:32px;border-radius:50%;min-width:32px;min-height:32px;"></button>
+        <button class="color-btn" data-color="#ffffff" style="background:#fff;width:32px;height:32px;border-radius:50%;min-width:32px;min-height:32px;border:1px solid #888;"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODO B ========== -->
+  <div id="modeBScreen" class="screen">
+    <canvas id="lightCanvas"></canvas>
+    <div class="light-panel" id="panelB">
+      <button id="btnHideUI" title="Ocultar UI"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
+      <button id="btnBrightUp">☀+</button>
+      <button id="btnBrightDown">☀−</button>
+      <button id="btnInvertB">⇄</button>
+      <button id="btnExitB"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ========== AJUSTES ========== -->
+  <div id="settingsScreen" class="screen">
+    <div class="header">
+      <button class="btn-icon" data-back><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1 data-i18n="settings">Ajustes</h1>
+    </div>
+    <div class="content">
+      <div class="card">
+        <h3 style="margin-bottom:12px;" data-i18n="setGeneral">General</h3>
+        <label style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <span data-i18n="autoConvert">Conversión automática a B/N</span>
+          <input type="checkbox" id="setAutoConvert" checked>
+        </label>
+        <label style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <span data-i18n="keepOriginal">Conservar originales</span>
+          <input type="checkbox" id="setKeepOriginal">
+        </label>
+        <label style="display:flex;align-items:center;justify-content:space-between;">
+          <span data-i18n="wakeLock">Mantener pantalla encendida</span>
+          <input type="checkbox" id="setWakeLock" checked>
+        </label>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:12px;" data-i18n="setStorage">Almacenamiento</h3>
+        <p style="font-size:0.85rem;opacity:0.7;margin-bottom:8px;" id="storageInfo">—</p>
+        <button class="btn-secondary btn-block" id="btnClearStorage" data-i18n="clearStorage">Borrar todas las imágenes</button>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:12px;" data-i18n="setAbout">Acerca de</h3>
+        <p style="font-size:0.9rem;line-height:1.5;" data-i18n="aboutText">Trazo AR v1.0 — App gratuita de dibujo asistido. Todo el procesamiento ocurre en tu dispositivo. Sin anuncios, sin rastreo, sin cuentas.</p>
+      </div>
+    </div>
+    <nav class="bottom-nav">
+      <button data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg><span data-i18n="navHome">Inicio</span></button>
+      <button data-nav="gallery"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span data-i18n="navGallery">Galería</span></button>
+      <button class="active" data-nav="settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span data-i18n="navSettings">Ajustes</span></button>
+      <button data-nav="help"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-i18n="navHelp">Ayuda</span></button>
+    </nav>
+  </div>
+
+  <!-- ========== AYUDA ========== -->
+  <div id="helpScreen" class="screen">
+    <div class="header">
+      <button class="btn-icon" data-back><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1 data-i18n="help">Ayuda</h1>
+    </div>
+    <div class="content">
+      <div class="card">
+        <h3 data-i18n="helpModeA">Modo Cámara arriba</h3>
+        <p data-i18n="helpModeAText">Coloca el teléfono en un soporte alto (vaso, libros, trípode) a 25-40 cm sobre el papel, con la cámara trasera mirando hacia abajo. Ajusta la guía hasta que coincida con el papel y dibuja mirando la pantalla.</p>
+      </div>
+      <div class="card">
+        <h3 data-i18n="helpModeB">Modo Mesa de luz</h3>
+        <p data-i18n="helpModeBText">Pon el teléfono boca arriba sobre la mesa. Coloca una hoja delgada encima de la pantalla. Sube el brillo al máximo. La luz atraviesa el papel y puedes calcar las líneas.</p>
+      </div>
+      <div class="card">
+        <h3 data-i18n="helpSupport">Ideas de soporte</h3>
+        <p data-i18n="helpSupportText">• Vaso o jarra alta<br>• Pila de libros<br>• Trípode de escritorio<br>• Soporte para tablet<br>• Lámpara articulada con pinza<br>• Caja de cartón con corte</p>
+      </div>
+      <div class="card">
+        <h3 data-i18n="helpPrivacy">Privacidad</h3>
+        <p data-i18n="helpPrivacyText">Todas las imágenes se procesan y guardan solo en tu dispositivo. Nada se sube a internet. No hay cuentas ni anuncios.</p>
+      </div>
+    </div>
+    <nav class="bottom-nav">
+      <button data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg><span data-i18n="navHome">Inicio</span></button>
+      <button data-nav="gallery"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span data-i18n="navGallery">Galería</span></button>
+      <button data-nav="settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span data-i18n="navSettings">Ajustes</span></button>
+      <button class="active" data-nav="help"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-i18n="navHelp">Ayuda</span></button>
+    </nav>
+  </div>
+
+  <!-- Inputs ocultos -->
+  <input type="file" id="fileInput" accept="image/*" multiple hidden>
+  <input type="file" id="captureInput" accept="image/*" capture="environment" hidden>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal tutorial primera vez -->
+  <div class="overlay" id="tutorialOverlay">
+    <div class="modal">
+      <h2 data-i18n="tutTitle">Bienvenido a Trazo AR</h2>
+      <div id="tutSteps">
+        <div class="tut-step">
+          <p data-i18n="tut1">1. Sube o toma una foto de lo que quieres dibujar.</p>
+        </div>
+        <div class="tut-step" style="display:none;">
+          <p data-i18n="tut2">2. La app la convierte en un boceto de líneas.</p>
+        </div>
+        <div class="tut-step" style="display:none;">
+          <p data-i18n="tut3">3. Elige "Cámara arriba" o "Mesa de luz" y dibuja sobre papel real.</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn-secondary" id="tutPrev" style="flex:1;display:none;" data-i18n="prev">Anterior</button>
+        <button class="btn-primary" id="tutNext" style="flex:1;" data-i18n="next">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal permiso cámara -->
+  <div class="overlay" id="camPermOverlay">
+    <div class="modal">
+      <h2 data-i18n="camPermTitle">Permiso de cámara</h2>
+      <p data-i18n="camPermText">Trazo AR necesita la cámara trasera para superponer la guía de dibujo sobre el papel en tiempo real. La imagen de la cámara nunca se guarda ni se envía a ningún servidor. Solo se muestra en tu pantalla.</p>
+      <button class="btn-primary btn-block" id="btnAllowCam" data-i18n="allowCam">Permitir cámara</button>
+      <button class="btn-secondary btn-block" id="btnDenyCam" style="margin-top:8px;" data-i18n="cancel">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+  // ========== i18n ==========
+  const I18N = {
+    es: {
+      tagline: "Dibuja lo que quieras, trazo a trazo.",
+      modeA: "Cámara arriba", modeADesc: "Teléfono sobre el papel",
+      modeB: "Mesa de luz", modeBDesc: "Papel sobre la pantalla",
+      upload: "Subir una foto", takePhoto: "Tomar una foto",
+      recent: "Mis dibujos recientes", noRecent: "Aún no hay dibujos",
+      how: "¿Cómo funciona?", privacy: "Tus fotos nunca salen de tu teléfono.",
+      navHome: "Inicio", navGallery: "Galería", navSettings: "Ajustes", navHelp: "Ayuda",
+      gallery: "Galería", emptyGallery: "No hay imágenes. Sube o toma una foto.",
+      editor: "Editor", stylePencil: "Boceto a lápiz", styleLines: "Líneas (contorno)",
+      styleGray: "Sombras (escala de grises)", styleThresh: "Alto contraste (B/N)",
+      styleComic: "Cómic", styleValues: "Cuadrícula de valores",
+      detail: "Detalle", thickness: "Grosor", smooth: "Suavizado",
+      brightness: "Brillo", contrast: "Contraste", gamma: "Gamma",
+      threshold: "Umbral", levels: "Niveles", invert: "Invertir",
+      reset: "Restablecer", auto: "Auto",
+      controls: "Controles", lock: "🔒 Bloquear", toggleGuide: "Guía",
+      grid: "Cuadrícula", freeze: "Congelar", switchCam: "Cámara",
+      torch: "Linterna", capture: "Capturar", exit: "Salir",
+      opacity: "Opacidad guía", guideColor: "Color guía",
+      settings: "Ajustes", setGeneral: "General", autoConvert: "Conversión automática a B/N",
+      keepOriginal: "Conservar originales", wakeLock: "Mantener pantalla encendida",
+      setStorage: "Almacenamiento", clearStorage: "Borrar todas las imágenes",
+      setAbout: "Acerca de", aboutText: "Trazo AR v1.0 — App gratuita de dibujo asistido. Todo el procesamiento ocurre en tu dispositivo. Sin anuncios, sin rastreo, sin cuentas.",
+      help: "Ayuda", helpModeA: "Modo Cámara arriba",
+      helpModeAText: "Coloca el teléfono en un soporte alto (vaso, libros, trípode) a 25-40 cm sobre el papel, con la cámara trasera mirando hacia abajo. Ajusta la guía hasta que coincida con el papel y dibuja mirando la pantalla.",
+      helpModeB: "Modo Mesa de luz",
+      helpModeBText: "Pon el teléfono boca arriba sobre la mesa. Coloca una hoja delgada encima de la pantalla. Sube el brillo al máximo. La luz atraviesa el papel y puedes calcar las líneas.",
+      helpSupport: "Ideas de soporte",
+      helpSupportText: "• Vaso o jarra alta<br>• Pila de libros<br>• Trípode de escritorio<br>• Soporte para tablet<br>• Lámpara articulada con pinza<br>• Caja de cartón con corte",
+      helpPrivacy: "Privacidad",
+      helpPrivacyText: "Todas las imágenes se procesan y guardan solo en tu dispositivo. Nada se sube a internet. No hay cuentas ni anuncios.",
+      tutTitle: "Bienvenido a Trazo AR", tut1: "1. Sube o toma una foto de lo que quieres dibujar.",
+      tut2: "2. La app la convierte en un boceto de líneas.", tut3: "3. Elige \"Cámara arriba\" o \"Mesa de luz\" y dibuja sobre papel real.",
+      next: "Siguiente", prev: "Anterior", finish: "Empezar",
+      camPermTitle: "Permiso de cámara",
+      camPermText: "Trazo AR necesita la cámara trasera para superponer la guía de dibujo sobre el papel en tiempo real. La imagen de la cámara nunca se guarda ni se envía a ningún servidor. Solo se muestra en tu pantalla.",
+      allowCam: "Permitir cámara", cancel: "Cancelar",
+      detectedColor: "Detectada: a color → convertida", detectedBW: "Detectada: ya en blanco y negro",
+      noCam: "No se encontró cámara", camDenied: "Permiso de cámara denegado. Actívalo en ajustes del navegador.",
+      camBusy: "La cámara está siendo usada por otra app.", needHttps: "Se necesita HTTPS para usar la cámara.",
+      saved: "Imagen guardada", deleted: "Imagen eliminada", cleared: "Almacenamiento borrado",
+      selectImage: "Primero elige o sube una imagen", processing: "Procesando…",
+      locked: "Guía bloqueada", unlocked: "Guía desbloqueada"
+    },
+    en: {
+      tagline: "Draw anything, stroke by stroke.",
+      modeA: "Camera above", modeADesc: "Phone over the paper",
+      modeB: "Light table", modeBDesc: "Paper over the screen",
+      upload: "Upload a photo", takePhoto: "Take a photo",
+      recent: "My recent drawings", noRecent: "No drawings yet",
+      how: "How does it work?", privacy: "Your photos never leave your phone.",
+      navHome: "Home", navGallery: "Gallery", navSettings: "Settings", navHelp: "Help",
+      gallery: "Gallery", emptyGallery: "No images. Upload or take a photo.",
+      editor: "Editor", stylePencil: "Pencil sketch", styleLines: "Lines (outline)",
+      styleGray: "Shadows (grayscale)", styleThresh: "High contrast (B/W)",
+      styleComic: "Comic", styleValues: "Value grid",
+      detail: "Detail", thickness: "Thickness", smooth: "Smooth",
+      brightness: "Brightness", contrast: "Contrast", gamma: "Gamma",
+      threshold: "Threshold", levels: "Levels", invert: "Invert",
+      reset: "Reset", auto: "Auto",
+      controls: "Controls", lock: "🔒 Lock", toggleGuide: "Guide",
+      grid: "Grid", freeze: "Freeze", switchCam: "Camera",
+      torch: "Torch", capture: "Capture", exit: "Exit",
+      opacity: "Guide opacity", guideColor: "Guide color",
+      settings: "Settings", setGeneral: "General", autoConvert: "Auto convert to B/W",
+      keepOriginal: "Keep originals", wakeLock: "Keep screen on",
+      setStorage: "Storage", clearStorage: "Clear all images",
+      setAbout: "About", aboutText: "Trazo AR v1.0 — Free assisted drawing app. All processing happens on your device. No ads, no tracking, no accounts.",
+      help: "Help", helpModeA: "Camera above mode",
+      helpModeAText: "Place the phone on a high support (glass, books, tripod) 25-40 cm above the paper, rear camera looking down. Adjust the guide to match the paper and draw while looking at the screen.",
+      helpModeB: "Light table mode",
+      helpModeBText: "Place the phone face up on the table. Put a thin sheet over the screen. Max brightness. Light shines through the paper so you can trace the lines.",
+      helpSupport: "Support ideas",
+      helpSupportText: "• Tall glass or jar<br>• Stack of books<br>• Desk tripod<br>• Tablet stand<br>• Articulated lamp with clamp<br>• Cardboard box with a cutout",
+      helpPrivacy: "Privacy",
+      helpPrivacyText: "All images are processed and stored only on your device. Nothing is uploaded. No accounts, no ads.",
+      tutTitle: "Welcome to Trazo AR", tut1: "1. Upload or take a photo of what you want to draw.",
+      tut2: "2. The app converts it into a line sketch.", tut3: "3. Choose \"Camera above\" or \"Light table\" and draw on real paper.",
+      next: "Next", prev: "Back", finish: "Start",
+      camPermTitle: "Camera permission",
+      camPermText: "Trazo AR needs the rear camera to overlay the drawing guide on the paper in real time. The camera feed is never saved or sent to any server. It only appears on your screen.",
+      allowCam: "Allow camera", cancel: "Cancel",
+      detectedColor: "Detected: color → converted", detectedBW: "Detected: already black & white",
+      noCam: "No camera found", camDenied: "Camera permission denied. Enable it in browser settings.",
+      camBusy: "Camera is being used by another app.", needHttps: "HTTPS is required to use the camera.",
+      saved: "Image saved", deleted: "Image deleted", cleared: "Storage cleared",
+      selectImage: "Please select or upload an image first", processing: "Processing…",
+      locked: "Guide locked", unlocked: "Guide unlocked"
+    }
+  };
+  let lang = localStorage.getItem('trazo_lang') || 'es';
+  let theme = localStorage.getItem('trazo_theme') || 'auto';
+
+  function t(key) { return (I18N[lang] && I18N[lang][key]) || I18N.es[key] || key; }
+  function applyI18n() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (el.tagName === 'OPTION') el.textContent = t(key);
+      else el.innerHTML = t(key);
+    });
+    document.documentElement.lang = lang;
+  }
+
+  // ========== Estado global ==========
+  const state = {
+    screen: 'home',
+    history: ['home'],
+    images: [], // {id, thumb, processed, original?, w, h, name, date}
+    currentId: null,
+    processedImageData: null, // ImageData final
+    processedBitmap: null,
+    editorParams: {
+      style: 'pencil', detail: 50, thick: 2, smooth: 3,
+      bright: 0, contrast: 0, gamma: 1.0, thresh: 128, levels: 4, invert: false
+    },
+    sourceBitmap: null,
+    sourceW: 0, sourceH: 0,
+    // Modo A
+    guide: { x: 0, y: 0, scale: 1, rotation: 0, opacity: 0.5, locked: false, color: [255,0,0], visible: true },
+    camStream: null,
+    camFacing: 'environment',
+    frozen: false,
+    gridOn: false,
+    gridSize: 3,
+    wakeLock: null,
+    // Modo B
+    lightBright: 1.0
+  };
+
+  // ========== Utilidades ==========
+  function toast(msg, ms = 2200) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), ms);
+  }
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(name + 'Screen');
+    if (el) el.classList.add('active');
+    state.screen = name;
+    // Actualizar bottom nav
+    document.querySelectorAll('.bottom-nav button').forEach(b => {
+      b.classList.toggle('active', b.dataset.nav === name);
+    });
+  }
+  function navigate(name, push = true) {
+    if (push && state.screen !== name) {
+      state.history.push(name);
+      history.pushState({ screen: name }, '', '#' + name);
+    }
+    showScreen(name);
+  }
+  function goBack() {
+    if (state.history.length > 1) {
+      state.history.pop();
+      const prev = state.history[state.history.length - 1];
+      showScreen(prev);
+    } else {
+      navigate('home', false);
+    }
+  }
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.screen) {
+      state.history.pop();
+      showScreen(e.state.screen);
+    } else goBack();
+  });
+
+  // ========== IndexedDB ==========
+  let db;
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open('TrazoAR', 1);
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        if (!d.objectStoreNames.contains('images')) {
+          d.createObjectStore('images', { keyPath: 'id' });
+        }
+      };
+      req.onsuccess = () => { db = req.result; resolve(db); };
+      req.onerror = () => reject(req.error);
+    });
+  }
+  function saveImage(img) {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('images', 'readwrite');
+      tx.objectStore('images').put(img);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+  function loadAllImages() {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('images', 'readonly');
+      const req = tx.objectStore('images').getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  function deleteImage(id) {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('images', 'readwrite');
+      tx.objectStore('images').delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+  function clearAllImages() {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('images', 'readwrite');
+      tx.objectStore('images').clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  // ========== Procesamiento de imagen ==========
+  function aGrises(data) {
+    for (let i = 0; i < data.length; i += 4) {
+      const y = 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+      data[i] = data[i + 1] = data[i + 2] = y;
+    }
+  }
+  function kernelGauss(radio) {
+    const sigma = Math.max(radio / 2, 0.5);
+    const tam = radio * 2 + 1;
+    const k = new Float32Array(tam);
+    let suma = 0;
+    for (let i = 0; i < tam; i++) {
+      const x = i - radio;
+      k[i] = Math.exp(-(x * x) / (2 * sigma * sigma));
+      suma += k[i];
+    }
+    for (let i = 0; i < tam; i++) k[i] /= suma;
+    return k;
+  }
+  function blurSeparable(src, w, h, radio) {
+    if (radio < 1) return new Uint8ClampedArray(src);
+    const k = kernelGauss(radio);
+    const tmp = new Float32Array(w * h);
+    const out = new Uint8ClampedArray(w * h);
+    // Horizontal
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        let sum = 0;
+        for (let i = -radio; i <= radio; i++) {
+          const xx = Math.min(w - 1, Math.max(0, x + i));
+          sum += src[y * w + xx] * k[i + radio];
+        }
+        tmp[y * w + x] = sum;
+      }
+    }
+    // Vertical
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        let sum = 0;
+        for (let i = -radio; i <= radio; i++) {
+          const yy = Math.min(h - 1, Math.max(0, y + i));
+          sum += tmp[yy * w + x] * k[i + radio];
+        }
+        out[y * w + x] = Math.min(255, Math.max(0, sum));
+      }
+    }
+    return out;
+  }
+  function sobel(gris, w, h) {
+    const mag = new Float32Array(w * h);
+    const SOBEL_X = [-1,0,1,-2,0,2,-1,0,1];
+    const SOBEL_Y = [-1,-2,-1,0,0,0,1,2,1];
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        let gx = 0, gy = 0, k = 0;
+        for (let j = -1; j <= 1; j++) {
+          for (let i = -1; i <= 1; i++) {
+            const v = gris[(y + j) * w + (x + i)];
+            gx += v * SOBEL_X[k];
+            gy += v * SOBEL_Y[k];
+            k++;
+          }
+        }
+        mag[y * w + x] = Math.hypot(gx, gy);
+      }
+    }
+    return mag;
+  }
+  function applyLevels(data, bright, contrast, gamma) {
+    const c = (contrast + 100) / 100;
+    const b = bright * 2.55;
+    const g = gamma;
+    for (let i = 0; i < data.length; i++) {
+      let v = data[i];
+      v = (v - 128) * c + 128 + b;
+      v = Math.min(255, Math.max(0, v));
+      v = 255 * Math.pow(v / 255, 1 / g);
+      data[i] = Math.min(255, Math.max(0, v));
+    }
+  }
+  function detectColor(imgData) {
+    const d = imgData.data;
+    let sum = 0, n = 0;
+    const step = Math.max(1, Math.floor(Math.sqrt(d.length / 4) / 64));
+    for (let i = 0; i < d.length; i += 4 * step) {
+      const mx = Math.max(d[i], d[i+1], d[i+2]);
+      const mn = Math.min(d[i], d[i+1], d[i+2]);
+      sum += mx - mn;
+      n++;
+    }
+    return (sum / n) > 12;
+  }
+
+  // Procesamiento principal
+  let processToken = 0;
+  async function processImage(preview = false) {
+    if (!state.sourceBitmap) return;
+    const token = ++processToken;
+    const p = state.editorParams;
+    let w = state.sourceW, h = state.sourceH;
+    if (preview) {
+      const max = 800;
+      if (w > max || h > max) {
+        const r = max / Math.max(w, h);
+        w = Math.round(w * r);
+        h = Math.round(h * r);
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(state.sourceBitmap, 0, 0, w, h);
+    let imgData = ctx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+
+    // A grises
+    aGrises(data);
+
+    // Extraer canal gris
+    const gris = new Uint8ClampedArray(w * h);
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) gris[j] = data[i];
+
+    let result;
+    const smoothR = Math.max(0, Math.round(p.smooth));
+    const detailFactor = p.detail / 50;
+
+    if (p.style === 'pencil') {
+      // Boceto a lápiz (color dodge)
+      const inv = new Uint8ClampedArray(w * h);
+      for (let i = 0; i < gris.length; i++) inv[i] = 255 - gris[i];
+      const blurR = Math.max(2, Math.round(6 + detailFactor * 6));
+      const blurred = blurSeparable(inv, w, h, blurR);
+      result = new Uint8ClampedArray(w * h);
+      for (let i = 0; i < result.length; i++) {
+        result[i] = Math.min(255, (gris[i] * 255) / (255 - blurred[i] + 1));
+      }
+      // Un poco de contraste extra
+      applyLevels(result, p.bright, p.contrast + 20, p.gamma);
+    } else if (p.style === 'lines') {
+      const blurred = blurSeparable(gris, w, h, Math.max(1, smoothR));
+      const mag = sobel(blurred, w, h);
+      // Normalizar
+      let maxM = 0;
+      for (let i = 0; i < mag.length; i++) if (mag[i] > maxM) maxM = mag[i];
+      const thresh = 20 + (100 - p.detail) * 1.5;
+      result = new Uint8ClampedArray(w * h);
+      for (let i = 0; i < result.length; i++) {
+        const v = maxM > 0 ? (mag[i] / maxM) * 255 : 0;
+        result[i] = v > thresh ? 0 : 255; // líneas negras sobre blanco
+      }
+      // Grosor: dilatación simple
+      if (p.thick > 1) {
+        const dilated = new Uint8ClampedArray(result);
+        const t = p.thick - 1;
+        for (let y = t; y < h - t; y++) {
+          for (let x = t; x < w - t; x++) {
+            if (result[y * w + x] < 128) {
+              for (let dy = -t; dy <= t; dy++)
+                for (let dx = -t; dx <= t; dx++)
+                  dilated[(y + dy) * w + (x + dx)] = 0;
+            }
+          }
+        }
+        result = dilated;
+      }
+      applyLevels(result, p.bright, p.contrast, p.gamma);
+    } else if (p.style === 'grayscale') {
+      result = new Uint8ClampedArray(gris);
+      if (smoothR > 0) result = blurSeparable(result, w, h, smoothR);
+      applyLevels(result, p.bright, p.contrast, p.gamma);
+    } else if (p.style === 'threshold') {
+      result = new Uint8ClampedArray(w * h);
+      const th = p.thresh;
+      for (let i = 0; i < gris.length; i++) result[i] = gris[i] > th ? 255 : 0;
+    } else if (p.style === 'comic') {
+      const blurred = blurSeparable(gris, w, h, Math.max(1, smoothR));
+      const mag = sobel(blurred, w, h);
+      let maxM = 0;
+      for (let i = 0; i < mag.length; i++) if (mag[i] > maxM) maxM = mag[i];
+      const levels = p.levels;
+      result = new Uint8ClampedArray(w * h);
+      for (let i = 0; i < result.length; i++) {
+        const edge = maxM > 0 && (mag[i] / maxM) * 255 > 40 ? 0 : 255;
+        if (edge === 0) { result[i] = 0; continue; }
+        const v = Math.floor(gris[i] / (256 / levels)) * (255 / (levels - 1));
+        result[i] = v;
+      }
+      applyLevels(result, p.bright, p.contrast, p.gamma);
+    } else if (p.style === 'values') {
+      const levels = p.levels;
+      result = new Uint8ClampedArray(w * h);
+      for (let i = 0; i < gris.length; i++) {
+        result[i] = Math.floor(gris[i] / (256 / levels)) * (255 / (levels - 1));
+      }
+      applyLevels(result, p.bright, p.contrast, p.gamma);
+    }
+
+    if (p.invert) {
+      for (let i = 0; i < result.length; i++) result[i] = 255 - result[i];
+    }
+
+    // Volver a ImageData RGBA
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+      data[i] = data[i+1] = data[i+2] = result[j];
+      data[i+3] = 255;
+    }
+
+    if (token !== processToken) return; // cancelado
+
+    // Dibujar en canvas del editor
+    const eCanvas = document.getElementById('editorCanvas');
+    eCanvas.width = w; eCanvas.height = h;
+    const eCtx = eCanvas.getContext('2d');
+    eCtx.putImageData(imgData, 0, 0);
+
+    if (!preview) {
+      state.processedImageData = imgData;
+      if (state.processedBitmap) try { state.processedBitmap.close(); } catch(e){}
+      state.processedBitmap = await createImageBitmap(imgData);
+    }
+  }
+
+  // Debounce para preview
+  let debounceTimer;
+  function scheduleProcess(preview = true) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => processImage(preview), preview ? 80 : 0);
+  }
+
+  // ========== Cargar imagen ==========
+  async function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) {
+      toast('Archivo no válido');
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      toast('Archivo demasiado grande (máx. 25 MB)');
+      return;
+    }
+    toast(t('processing'));
+    try {
+      let bitmap;
+      try {
+        bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      } catch (e) {
+        // Fallback
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; });
+        bitmap = await createImageBitmap(img);
+        URL.revokeObjectURL(url);
+      }
+      // Redimensionar si es muy grande
+      let w = bitmap.width, h = bitmap.height;
+      const maxSide = 2048;
+      if (w > maxSide || h > maxSide) {
+        const r = maxSide / Math.max(w, h);
+        w = Math.round(w * r); h = Math.round(h * r);
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+        bitmap.close();
+        bitmap = await createImageBitmap(c);
+      }
+      state.sourceBitmap = bitmap;
+      state.sourceW = w;
+      state.sourceH = h;
+
+      // Detectar color
+      const tmpC = document.createElement('canvas');
+      tmpC.width = 64; tmpC.height = 64;
+      const tctx = tmpC.getContext('2d');
+      tctx.drawImage(bitmap, 0, 0, 64, 64);
+      const sample = tctx.getImageData(0, 0, 64, 64);
+      const isColor = detectColor(sample);
+      const autoConvert = document.getElementById('setAutoConvert').checked;
+      document.getElementById('detectLabel').textContent = isColor ? t('detectedColor') : t('detectedBW');
+
+      // Reset params
+      state.editorParams = { style: 'pencil', detail: 50, thick: 2, smooth: 3, bright: 0, contrast: 0, gamma: 1.0, thresh: 128, levels: 4, invert: false };
+      syncEditorUI();
+      await processImage(false);
+
+      // Guardar en galería
+      const thumbC = document.createElement('canvas');
+      thumbC.width = 144; thumbC.height = 144;
+      const thCtx = thumbC.getContext('2d');
+      const scale = Math.max(144 / w, 144 / h);
+      thCtx.drawImage(bitmap, (144 - w * scale) / 2, (144 - h * scale) / 2, w * scale, h * scale);
+      const thumbData = thumbC.toDataURL('image/jpeg', 0.7);
+
+      // Processed data URL (comprimido)
+      const procC = document.createElement('canvas');
+      procC.width = state.processedImageData.width;
+      procC.height = state.processedImageData.height;
+      procC.getContext('2d').putImageData(state.processedImageData, 0, 0);
+      const procData = procC.toDataURL('image/jpeg', 0.85);
+
+      const id = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+      const entry = {
+        id, thumb: thumbData, processed: procData,
+        w: state.processedImageData.width, h: state.processedImageData.height,
+        name: file.name || 'imagen', date: Date.now()
+      };
+      if (document.getElementById('setKeepOriginal').checked) {
+        // Guardar original reducido
+        const origC = document.createElement('canvas');
+        origC.width = w; origC.height = h;
+        origC.getContext('2d').drawImage(bitmap, 0, 0);
+        entry.original = origC.toDataURL('image/jpeg', 0.8);
+      }
+      state.images.unshift(entry);
+      state.currentId = id;
+      await saveImage(entry);
+      renderRecent();
+      renderGallery();
+      navigate('editor');
+    } catch (err) {
+      console.error(err);
+      toast('Error al cargar imagen');
+    }
+  }
+
+  function syncEditorUI() {
+    const p = state.editorParams;
+    document.getElementById('styleSelect').value = p.style;
+    document.getElementById('sDetail').value = p.detail;
+    document.getElementById('sThick').value = p.thick;
+    document.getElementById('sSmooth').value = p.smooth;
+    document.getElementById('sBright').value = p.bright;
+    document.getElementById('sContrast').value = p.contrast;
+    document.getElementById('sGamma').value = Math.round(p.gamma * 100);
+    document.getElementById('sThresh').value = p.thresh;
+    document.getElementById('sLevels').value = p.levels;
+    document.querySelectorAll('.slider-row .val').forEach((el, i) => {
+      const ids = ['sDetail','sThick','sSmooth','sBright','sContrast','sGamma','sThresh','sLevels'];
+      // se actualiza en listeners
+    });
+    updateSliderLabels();
+  }
+  function updateSliderLabels() {
+    document.querySelector('#sDetail').nextElementSibling.textContent = document.getElementById('sDetail').value;
+    document.querySelector('#sThick').nextElementSibling.textContent = document.getElementById('sThick').value;
+    document.querySelector('#sSmooth').nextElementSibling.textContent = document.getElementById('sSmooth').value;
+    document.querySelector('#sBright').nextElementSibling.textContent = document.getElementById('sBright').value;
+    document.querySelector('#sContrast').nextElementSibling.textContent = document.getElementById('sContrast').value;
+    document.querySelector('#sGamma').nextElementSibling.textContent = (document.getElementById('sGamma').value / 100).toFixed(1);
+    document.querySelector('#sThresh').nextElementSibling.textContent = document.getElementById('sThresh').value;
+    document.querySelector('#sLevels').nextElementSibling.textContent = document.getElementById('sLevels').value;
+  }
+
+  // ========== Galería y recientes ==========
+  function renderRecent() {
+    const cont = document.getElementById('recentThumbs');
+    if (!state.images.length) {
+      cont.innerHTML = `<p style="opacity:0.5;font-size:0.85rem;">${t('noRecent')}</p>`;
+      return;
+    }
+    cont.innerHTML = '';
+    state.images.slice(0, 6).forEach(img => {
+      const el = document.createElement('img');
+      el.className = 'thumb';
+      el.src = img.thumb;
+      el.alt = img.name;
+      el.onclick = () => selectImage(img.id);
+      cont.appendChild(el);
+    });
+  }
+  function renderGallery() {
+    const grid = document.getElementById('galleryGrid');
+    const empty = document.getElementById('galleryEmpty');
+    grid.innerHTML = '';
+    if (!state.images.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    state.images.forEach(img => {
+      const div = document.createElement('div');
+      div.style.cssText = 'position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;cursor:pointer;';
+      const im = document.createElement('img');
+      im.src = img.thumb;
+      im.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+      im.onclick = () => selectImage(img.id);
+      const del = document.createElement('button');
+      del.textContent = '×';
+      del.style.cssText = 'position:absolute;top:4px;right:4px;width:28px;height:28px;min-width:28px;min-height:28px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;font-size:16px;';
+      del.onclick = async (e) => {
+        e.stopPropagation();
+        await deleteImage(img.id);
+        state.images = state.images.filter(i => i.id !== img.id);
+        renderGallery(); renderRecent();
+        toast(t('deleted'));
+      };
+      div.appendChild(im); div.appendChild(del);
+      grid.appendChild(div);
+    });
+  }
+  async function selectImage(id) {
+    const img = state.images.find(i => i.id === id);
+    if (!img) return;
+    state.currentId = id;
+    // Cargar processed
+    const im = new Image();
+    await new Promise(r => { im.onload = r; im.src = img.processed; });
+    const c = document.createElement('canvas');
+    c.width = img.w; c.height = img.h;
+    c.getContext('2d').drawImage(im, 0, 0);
+    state.processedImageData = c.getContext('2d').getImageData(0, 0, img.w, img.h);
+    if (state.processedBitmap) try { state.processedBitmap.close(); } catch(e){}
+    state.processedBitmap = await createImageBitmap(state.processedImageData);
+    state.sourceW = img.w; state.sourceH = img.h;
+    // También como source para re-editar
+    state.sourceBitmap = await createImageBitmap(state.processedImageData);
+    navigate('editor');
+    // Dibujar en editor
+    const eCanvas = document.getElementById('editorCanvas');
+    eCanvas.width = img.w; eCanvas.height = img.h;
+    eCanvas.getContext('2d').putImageData(state.processedImageData, 0, 0);
+  }
+
+  // ========== Modo A - Cámara ==========
+  async function startCamera() {
+    if (!state.processedBitmap) { toast(t('selectImage')); return; }
+    document.getElementById('camPermOverlay').classList.add('active');
+  }
+  async function reallyStartCamera() {
+    document.getElementById('camPermOverlay').classList.remove('active');
+    const constraints = {
+      audio: false,
+      video: {
+        facingMode: { ideal: state.camFacing },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        frameRate: { ideal: 30 }
+      }
+    };
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      state.camStream = stream;
+      const video = document.getElementById('videoCam');
+      video.srcObject = stream;
+      await video.play();
+      // Controles avanzados
+      const track = stream.getVideoTracks()[0];
+      if (track.getCapabilities) {
+        const caps = track.getCapabilities();
+        if (caps.torch) document.getElementById('btnTorch').style.display = '';
+      }
+      // Wake lock
+      if (document.getElementById('setWakeLock').checked && 'wakeLock' in navigator) {
+        try { state.wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
+      }
+      // Nivel
+      setupOrientation();
+      // Reset guía
+      state.guide = { x: 0, y: 0, scale: 1, rotation: 0, opacity: 0.5, locked: false, color: [255,0,0], visible: true };
+      document.getElementById('sOpacity').value = 50;
+      navigate('modeA');
+      requestAnimationFrame(drawGuideLoop);
+    } catch (err) {
+      console.error(err);
+      let msg = t('noCam');
+      if (err.name === 'NotAllowedError') msg = t('camDenied');
+      else if (err.name === 'NotReadableError') msg = t('camBusy');
+      else if (err.name === 'SecurityError') msg = t('needHttps');
+      else if (err.name === 'OverconstrainedError') {
+        // Reintentar simple
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+          state.camStream = stream;
+          document.getElementById('videoCam').srcObject = stream;
+          await document.getElementById('videoCam').play();
+          navigate('modeA');
+          requestAnimationFrame(drawGuideLoop);
+          return;
+        } catch(e2) {}
+      }
+      toast(msg);
+    }
+  }
+  function stopCamera() {
+    if (state.camStream) {
+      state.camStream.getTracks().forEach(t => t.stop());
+      state.camStream = null;
+    }
+    if (state.wakeLock) { try { state.wakeLock.release(); } catch(e){} state.wakeLock = null; }
+    document.getElementById('videoCam').srcObject = null;
+  }
+  function drawGuideLoop() {
+    if (state.screen !== 'modeA') return;
+    const canvas = document.getElementById('guideCanvas');
+    const video = document.getElementById('videoCam');
+    const rect = video.getBoundingClientRect();
+    canvas.width = rect.width * devicePixelRatio;
+    canvas.height = rect.height * devicePixelRatio;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (state.guide.visible && state.processedBitmap) {
+      ctx.save();
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+      const g = state.guide;
+      const cw = rect.width, ch = rect.height;
+      ctx.translate(cw / 2 + g.x, ch / 2 + g.y);
+      ctx.rotate(g.rotation * Math.PI / 180);
+      ctx.scale(g.scale * (g.mirror ? -1 : 1), g.scale);
+      // Convertir a alfa
+      const iw = state.processedBitmap.width, ih = state.processedBitmap.height;
+      const maxDim = Math.min(cw, ch) * 0.85;
+      const sc = maxDim / Math.max(iw, ih);
+      ctx.globalAlpha = g.opacity;
+      // Dibujar con color
+      const off = document.createElement('canvas');
+      off.width = iw; off.height = ih;
+      const octx = off.getContext('2d');
+      octx.drawImage(state.processedBitmap, 0, 0);
+      const id = octx.getImageData(0, 0, iw, ih);
+      const d = id.data;
+      const col = g.color;
+      for (let i = 0; i < d.length; i += 4) {
+        const lum = d[i];
+        d[i] = col[0]; d[i+1] = col[1]; d[i+2] = col[2];
+        d[i+3] = 255 - lum;
+      }
+      octx.putImageData(id, 0, 0);
+      ctx.drawImage(off, -iw * sc / 2, -ih * sc / 2, iw * sc, ih * sc);
+      ctx.restore();
+    }
+    // Grid
+    if (state.gridOn) {
+      const gc = document.getElementById('gridCanvas');
+      gc.width = canvas.width; gc.height = canvas.height;
+      gc.style.width = rect.width + 'px'; gc.style.height = rect.height + 'px';
+      const gctx = gc.getContext('2d');
+      gctx.clearRect(0, 0, gc.width, gc.height);
+      gctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      gctx.lineWidth = 1 * devicePixelRatio;
+      const n = state.gridSize;
+      for (let i = 1; i < n; i++) {
+        const x = (gc.width / n) * i;
+        const y = (gc.height / n) * i;
+        gctx.beginPath(); gctx.moveTo(x, 0); gctx.lineTo(x, gc.height); gctx.stroke();
+        gctx.beginPath(); gctx.moveTo(0, y); gctx.lineTo(gc.width, y); gctx.stroke();
+      }
+    } else {
+      const gc = document.getElementById('gridCanvas');
+      gc.width = 1; gc.height = 1;
+    }
+    requestAnimationFrame(drawGuideLoop);
+  }
+
+  // Gestos guía
+  let pointers = new Map();
+  let lastDist = 0, lastAngle = 0, lastCenter = null;
+  function onPointerDown(e) {
+    if (state.guide.locked || state.screen !== 'modeA') return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    document.getElementById('guideCanvas').setPointerCapture(e.pointerId);
+    if (pointers.size === 2) {
+      const pts = [...pointers.values()];
+      lastDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      lastAngle = Math.atan2(pts[1].y - pts[0].y, pts[1].x - pts[0].x);
+      lastCenter = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+    }
+  }
+  function onPointerMove(e) {
+    if (state.guide.locked || !pointers.has(e.pointerId)) return;
+    const prev = pointers.get(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 1) {
+      state.guide.x += e.clientX - prev.x;
+      state.guide.y += e.clientY - prev.y;
+    } else if (pointers.size === 2) {
+      const pts = [...pointers.values()];
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      const angle = Math.atan2(pts[1].y - pts[0].y, pts[1].x - pts[0].x);
+      const center = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+      if (lastDist > 0) state.guide.scale *= dist / lastDist;
+      state.guide.scale = Math.max(0.1, Math.min(5, state.guide.scale));
+      state.guide.rotation += (angle - lastAngle) * 180 / Math.PI;
+      state.guide.x += center.x - lastCenter.x;
+      state.guide.y += center.y - lastCenter.y;
+      lastDist = dist; lastAngle = angle; lastCenter = center;
+    }
+  }
+  function onPointerUp(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) { lastDist = 0; }
+  }
+  // Long press para ocultar guía
+  let longPressTimer;
+  function onPointerDownLong(e) {
+    longPressTimer = setTimeout(() => {
+      state.guide.visible = false;
+    }, 400);
+  }
+  function onPointerUpLong() {
+    clearTimeout(longPressTimer);
+    state.guide.visible = true;
+  }
+
+  // ========== Modo B ==========
+  function startModeB() {
+    if (!state.processedBitmap) { toast(t('selectImage')); return; }
+    navigate('modeB');
+    drawLight();
+    if (document.getElementById('setWakeLock').checked && 'wakeLock' in navigator) {
+      navigator.wakeLock.request('screen').then(l => state.wakeLock = l).catch(()=>{});
+    }
+  }
+  function drawLight() {
+    const canvas = document.getElementById('lightCanvas');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * devicePixelRatio;
+    canvas.height = rect.height * devicePixelRatio;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (state.processedBitmap) {
+      const iw = state.processedBitmap.width, ih = state.processedBitmap.height;
+      const scale = Math.min(canvas.width / iw, canvas.height / ih) * 0.95;
+      const dw = iw * scale, dh = ih * scale;
+      ctx.globalAlpha = state.lightBright;
+      ctx.drawImage(state.processedBitmap, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+    }
+  }
+
+  // ========== Orientación ==========
+  function setupOrientation() {
+    const bubble = document.getElementById('levelBubble');
+    const dot = document.getElementById('levelDot');
+    if (!window.DeviceOrientationEvent) { bubble.style.display = 'none'; return; }
+    bubble.style.display = 'block';
+    const handler = (e) => {
+      const beta = e.beta || 0; // -180 a 180
+      const gamma = e.gamma || 0;
+      // Queremos beta ~ 0 (horizontal) cuando el teléfono está plano boca abajo… 
+      // En modo cámara arriba el teléfono está horizontal (pantalla hacia arriba o un poco inclinada)
+      // Mejor: usar la inclinación respecto a la horizontal
+      const x = Math.max(-20, Math.min(20, gamma)) / 20;
+      const y = Math.max(-20, Math.min(20, beta - 90)) / 20; // ajustar según orientación
+      dot.style.transform = `translate(calc(-50% + ${x * 18}px), calc(-50% + ${y * 18}px))`;
+      const ok = Math.abs(x) < 0.15 && Math.abs(y) < 0.15;
+      dot.classList.toggle('ok', ok);
+    };
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(s => {
+        if (s === 'granted') window.addEventListener('deviceorientation', handler);
+      }).catch(() => bubble.style.display = 'none');
+    } else {
+      window.addEventListener('deviceorientation', handler);
+    }
+  }
+
+  // ========== Eventos ==========
+  document.addEventListener('DOMContentLoaded', async () => {
+    applyI18n();
+    // Tema
+    if (theme !== 'auto') document.documentElement.setAttribute('data-theme', theme);
+    document.querySelectorAll('.theme-switch button').forEach(b => {
+      b.classList.toggle('active', b.dataset.theme === theme);
+      b.onclick = () => {
+        theme = b.dataset.theme;
+        localStorage.setItem('trazo_theme', theme);
+        document.querySelectorAll('.theme-switch button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        if (theme === 'auto') document.documentElement.removeAttribute('data-theme');
+        else document.documentElement.setAttribute('data-theme', theme);
+      };
+    });
+    // Idioma
+    document.querySelectorAll('.lang-switch button').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === lang);
+      b.onclick = () => {
+        lang = b.dataset.lang;
+        localStorage.setItem('trazo_lang', lang);
+        document.querySelectorAll('.lang-switch button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        applyI18n();
+      };
+    });
+
+    await openDB();
+    state.images = await loadAllImages();
+    state.images.sort((a, b) => b.date - a.date);
+    renderRecent();
+    renderGallery();
+
+    // Tutorial primera vez
+    if (!localStorage.getItem('trazo_tut')) {
+      document.getElementById('tutorialOverlay').classList.add('active');
+      let step = 0;
+      const steps = document.querySelectorAll('.tut-step');
+      document.getElementById('tutNext').onclick = () => {
+        if (step < 2) {
+          steps[step].style.display = 'none';
+          step++;
+          steps[step].style.display = 'block';
+          document.getElementById('tutPrev').style.display = 'block';
+          if (step === 2) document.getElementById('tutNext').textContent = t('finish');
+        } else {
+          document.getElementById('tutorialOverlay').classList.remove('active');
+          localStorage.setItem('trazo_tut', '1');
+        }
+      };
+      document.getElementById('tutPrev').onclick = () => {
+        if (step > 0) {
+          steps[step].style.display = 'none';
+          step--;
+          steps[step].style.display = 'block';
+          document.getElementById('tutNext').textContent = t('next');
+          if (step === 0) document.getElementById('tutPrev').style.display = 'none';
+        }
+      };
+    }
+
+    // Navegación
+    document.querySelectorAll('[data-nav]').forEach(b => {
+      b.onclick = () => navigate(b.dataset.nav);
+    });
+    document.querySelectorAll('[data-back]').forEach(b => {
+      b.onclick = goBack;
+    });
+
+    // Upload
+    document.getElementById('btnUpload').onclick = () => document.getElementById('fileInput').click();
+    document.getElementById('btnAddMore').onclick = () => document.getElementById('fileInput').click();
+    document.getElementById('btnCapture').onclick = () => document.getElementById('captureInput').click();
+    document.getElementById('fileInput').onchange = (e) => {
+      [...e.target.files].forEach(f => loadFile(f));
+      e.target.value = '';
+    };
+    document.getElementById('captureInput').onchange = (e) => {
+      if (e.target.files[0]) loadFile(e.target.files[0]);
+      e.target.value = '';
+    };
+    // Drag & drop
+    document.body.addEventListener('dragover', e => { e.preventDefault(); });
+    document.body.addEventListener('drop', e => {
+      e.preventDefault();
+      [...e.dataTransfer.files].filter(f => f.type.startsWith('image/')).forEach(f => loadFile(f));
+    });
+    // Paste
+    document.addEventListener('paste', e => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const it of items) {
+        if (it.type.startsWith('image/')) {
+          loadFile(it.getAsFile());
+          break;
+        }
+      }
+    });
+
+    // Modos
+    document.getElementById('btnModeA').onclick = () => {
+      if (!state.processedBitmap) { toast(t('selectImage')); navigate('gallery'); return; }
+      startCamera();
+    };
+    document.getElementById('btnModeB').onclick = () => {
+      if (!state.processedBitmap) { toast(t('selectImage')); navigate('gallery'); return; }
+      startModeB();
+    };
+    document.getElementById('btnHow').onclick = () => navigate('help');
+    document.getElementById('btnAllowCam').onclick = reallyStartCamera;
+    document.getElementById('btnDenyCam').onclick = () => document.getElementById('camPermOverlay').classList.remove('active');
+
+    // Editor controls
+    document.getElementById('styleSelect').onchange = (e) => {
+      state.editorParams.style = e.target.value;
+      scheduleProcess(false);
+    };
+    ['sDetail','sThick','sSmooth','sBright','sContrast','sGamma','sThresh','sLevels'].forEach(id => {
+      const el = document.getElementById(id);
+      el.oninput = () => {
+        updateSliderLabels();
+        const p = state.editorParams;
+        p.detail = +document.getElementById('sDetail').value;
+        p.thick = +document.getElementById('sThick').value;
+        p.smooth = +document.getElementById('sSmooth').value;
+        p.bright = +document.getElementById('sBright').value;
+        p.contrast = +document.getElementById('sContrast').value;
+        p.gamma = document.getElementById('sGamma').value / 100;
+        p.thresh = +document.getElementById('sThresh').value;
+        p.levels = +document.getElementById('sLevels').value;
+        scheduleProcess(true);
+      };
+      el.onchange = () => scheduleProcess(false);
+    });
+    document.getElementById('btnInvert').onclick = () => {
+      state.editorParams.invert = !state.editorParams.invert;
+      scheduleProcess(false);
+    };
+    document.getElementById('btnReset').onclick = () => {
+      state.editorParams = { style: 'pencil', detail: 50, thick: 2, smooth: 3, bright: 0, contrast: 0, gamma: 1.0, thresh: 128, levels: 4, invert: false };
+      syncEditorUI();
+      scheduleProcess(false);
+    };
+    document.getElementById('btnAuto').onclick = () => {
+      state.editorParams.bright = 10;
+      state.editorParams.contrast = 30;
+      state.editorParams.gamma = 1.1;
+      state.editorParams.detail = 60;
+      syncEditorUI();
+      scheduleProcess(false);
+    };
+    document.getElementById('btnRotateL').onclick = async () => {
+      if (!state.sourceBitmap) return;
+      const c = document.createElement('canvas');
+      c.width = state.sourceH; c.height = state.sourceW;
+      const ctx = c.getContext('2d');
+      ctx.translate(0, state.sourceW);
+      ctx.rotate(-Math.PI / 2);
+      ctx.drawImage(state.sourceBitmap, 0, 0);
+      state.sourceBitmap.close();
+      state.sourceBitmap = await createImageBitmap(c);
+      [state.sourceW, state.sourceH] = [state.sourceH, state.sourceW];
+      scheduleProcess(false);
+    };
+    document.getElementById('btnRotateR').onclick = async () => {
+      if (!state.sourceBitmap) return;
+      const c = document.createElement('canvas');
+      c.width = state.sourceH; c.height = state.sourceW;
+      const ctx = c.getContext('2d');
+      ctx.translate(state.sourceH, 0);
+      ctx.rotate(Math.PI / 2);
+      ctx.drawImage(state.sourceBitmap, 0, 0);
+      state.sourceBitmap.close();
+      state.sourceBitmap = await createImageBitmap(c);
+      [state.sourceW, state.sourceH] = [state.sourceH, state.sourceW];
+      scheduleProcess(false);
+    };
+    document.getElementById('btnFlipH').onclick = async () => {
+      if (!state.sourceBitmap) return;
+      const c = document.createElement('canvas');
+      c.width = state.sourceW; c.height = state.sourceH;
+      const ctx = c.getContext('2d');
+      ctx.translate(state.sourceW, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(state.sourceBitmap, 0, 0);
+      state.sourceBitmap.close();
+      state.sourceBitmap = await createImageBitmap(c);
+      scheduleProcess(false);
+    };
+    document.getElementById('btnFlipV').onclick = async () => {
+      if (!state.sourceBitmap) return;
+      const c = document.createElement('canvas');
+      c.width = state.sourceW; c.height = state.sourceH;
+      const ctx = c.getContext('2d');
+      ctx.translate(0, state.sourceH);
+      ctx.scale(1, -1);
+      ctx.drawImage(state.sourceBitmap, 0, 0);
+      state.sourceBitmap.close();
+      state.sourceBitmap = await createImageBitmap(c);
+      scheduleProcess(false);
+    };
+    document.getElementById('btnEditorDone').onclick = async () => {
+      // Guardar cambios
+      if (state.currentId && state.processedImageData) {
+        const img = state.images.find(i => i.id === state.currentId);
+        if (img) {
+          const procC = document.createElement('canvas');
+          procC.width = state.processedImageData.width;
+          procC.height = state.processedImageData.height;
+          procC.getContext('2d').putImageData(state.processedImageData, 0, 0);
+          img.processed = procC.toDataURL('image/jpeg', 0.85);
+          img.w = procC.width; img.h = procC.height;
+          await saveImage(img);
+          renderRecent(); renderGallery();
+        }
+      }
+      goBack();
+    };
+
+    // Modo A panel
+    document.getElementById('togglePanelA').onclick = () => {
+      document.getElementById('panelA').classList.toggle('collapsed');
+    };
+    document.getElementById('btnLockGuide').onclick = () => {
+      state.guide.locked = !state.guide.locked;
+      toast(state.guide.locked ? t('locked') : t('unlocked'));
+    };
+    document.getElementById('btnToggleGuide').onclick = () => {
+      state.guide.visible = !state.guide.visible;
+    };
+    document.getElementById('btnGrid').onclick = () => {
+      state.gridOn = !state.gridOn;
+    };
+    document.getElementById('btnFreeze').onclick = () => {
+      state.frozen = !state.frozen;
+      const video = document.getElementById('videoCam');
+      if (state.frozen) video.pause(); else video.play();
+    };
+    document.getElementById('btnSwitchCam').onclick = async () => {
+      state.camFacing = state.camFacing === 'environment' ? 'user' : 'environment';
+      stopCamera();
+      await reallyStartCamera();
+    };
+    document.getElementById('btnTorch').onclick = async () => {
+      const track = state.camStream?.getVideoTracks()[0];
+      if (!track) return;
+      const caps = track.getCapabilities();
+      if (caps.torch) {
+        const cur = track.getSettings().torch;
+        await track.applyConstraints({ advanced: [{ torch: !cur }] });
+      }
+    };
+    document.getElementById('btnCaptureProgress').onclick = () => {
+      // Capturar solo el video (sin guía)
+      const video = document.getElementById('videoCam');
+      const c = document.createElement('canvas');
+      c.width = video.videoWidth; c.height = video.videoHeight;
+      c.getContext('2d').drawImage(video, 0, 0);
+      c.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'trazo-progreso-' + Date.now() + '.jpg';
+        a.click();
+      }, 'image/jpeg', 0.9);
+    };
+    document.getElementById('btnExitA').onclick = () => {
+      stopCamera();
+      goBack();
+    };
+    document.getElementById('sOpacity').oninput = (e) => {
+      state.guide.opacity = e.target.value / 100;
+    };
+    document.querySelectorAll('.color-btn').forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll('.color-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        const hex = b.dataset.color;
+        state.guide.color = [
+          parseInt(hex.slice(1,3),16),
+          parseInt(hex.slice(3,5),16),
+          parseInt(hex.slice(5,7),16)
+        ];
+      };
+    });
+
+    // Gestos
+    const guideEl = document.getElementById('modeAScreen');
+    guideEl.addEventListener('pointerdown', onPointerDown);
+    guideEl.addEventListener('pointermove', onPointerMove);
+    guideEl.addEventListener('pointerup', onPointerUp);
+    guideEl.addEventListener('pointercancel', onPointerUp);
+    // Long press
+    guideEl.addEventListener('pointerdown', onPointerDownLong);
+    guideEl.addEventListener('pointerup', onPointerUpLong);
+    guideEl.addEventListener('pointercancel', onPointerUpLong);
+    // Wheel zoom
+    guideEl.addEventListener('wheel', e => {
+      if (state.guide.locked) return;
+      e.preventDefault();
+      state.guide.scale *= e.deltaY > 0 ? 0.9 : 1.1;
+      state.guide.scale = Math.max(0.1, Math.min(5, state.guide.scale));
+    }, { passive: false });
+    // Teclado
+    document.addEventListener('keydown', e => {
+      if (state.screen !== 'modeA' || state.guide.locked) return;
+      const step = e.shiftKey ? 10 : 1;
+      if (e.key === 'ArrowLeft') state.guide.x -= step;
+      if (e.key === 'ArrowRight') state.guide.x += step;
+      if (e.key === 'ArrowUp') state.guide.y -= step;
+      if (e.key === 'ArrowDown') state.guide.y += step;
+      if (e.key === '+' || e.key === '=') state.guide.scale *= 1.05;
+      if (e.key === '-') state.guide.scale *= 0.95;
+      if (e.key === 'r' || e.key === 'R') state.guide.rotation += 5;
+    });
+
+    // Modo B
+    document.getElementById('btnHideUI').onclick = () => {
+      document.getElementById('modeBScreen').classList.toggle('hidden-ui');
+    };
+    document.getElementById('btnBrightUp').onclick = () => {
+      state.lightBright = Math.min(1.5, state.lightBright + 0.1);
+      drawLight();
+    };
+    document.getElementById('btnBrightDown').onclick = () => {
+      state.lightBright = Math.max(0.3, state.lightBright - 0.1);
+      drawLight();
+    };
+    document.getElementById('btnInvertB').onclick = () => {
+      state.editorParams.invert = !state.editorParams.invert;
+      // Re-procesar rápido solo invert
+      if (state.processedImageData) {
+        const d = state.processedImageData.data;
+        for (let i = 0; i < d.length; i += 4) {
+          d[i] = 255 - d[i]; d[i+1] = 255 - d[i+1]; d[i+2] = 255 - d[i+2];
+        }
+        createImageBitmap(state.processedImageData).then(b => {
+          if (state.processedBitmap) try { state.processedBitmap.close(); } catch(e){}
+          state.processedBitmap = b;
+          drawLight();
+        });
+      }
+    };
+    document.getElementById('btnExitB').onclick = () => {
+      if (state.wakeLock) { try { state.wakeLock.release(); } catch(e){} state.wakeLock = null; }
+      goBack();
+    };
+
+    // Ajustes
+    document.getElementById('btnClearStorage').onclick = async () => {
+      if (confirm(lang === 'es' ? '¿Borrar todas las imágenes?' : 'Delete all images?')) {
+        await clearAllImages();
+        state.images = [];
+        renderRecent(); renderGallery();
+        toast(t('cleared'));
+      }
+    };
+    // Storage info
+    if (navigator.storage && navigator.storage.estimate) {
+      navigator.storage.estimate().then(est => {
+        const used = ((est.usage || 0) / 1048576).toFixed(1);
+        const quota = ((est.quota || 0) / 1048576).toFixed(0);
+        document.getElementById('storageInfo').textContent = `${used} MB / ~${quota} MB`;
+      });
+    }
+
+    // Visibility (pausar cámara)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && state.camStream) {
+        state.camStream.getTracks().forEach(t => t.enabled = false);
+      } else if (state.camStream) {
+        state.camStream.getTracks().forEach(t => t.enabled = true);
+      }
+    });
+
+    // History inicial
+    history.replaceState({ screen: 'home' }, '', '#home');
+  });
+  </script>
+</body>
+</html>
