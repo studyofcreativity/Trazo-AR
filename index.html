@@ -412,7 +412,7 @@ select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border)
       <button class="btn-primary" id="btnStartRec" style="flex:1">● Grabar video</button>
       <button class="btn-secondary" id="btnTakePhoto" style="flex:1">📷 Foto</button>
     </div>
-    <p style="font-size:.72rem;opacity:.5;margin-top:8px">La calidad se elige según tu móvil. Puedes subirla manualmente si tu teléfono lo aguanta. Los archivos se descargan; no se guardan en la app.</p>
+    <p style="font-size:.72rem;opacity:.5;margin-top:8px">Por defecto se prioriza que vaya fluido (calidad = rendimiento). Subir a 1080p/60 solo si tu móvil es potente. Los archivos se descargan; no se guardan en la app.</p>
   </div>
 </div>
 
@@ -538,7 +538,7 @@ const state={
   guide:{x:0,y:0,scale:1,rotation:0,opacity:.5,locked:false,color:[255,0,0],visible:true,mirror:false},
   camStream:null,camFacing:'environment',frozen:false,gridOn:false,gridSize:3,wakeLock:null,lightBright:1,
   // Grabación
-  rec:{option:'guia',res:720,fps:30,active:false,paused:false,recorder:null,chunks:[],startTime:0,timerId:null,blob:null,mime:'',bitrate:4000000,photoMax:1920},
+  rec:{option:'guia',res:720,fps:24,active:false,paused:false,recorder:null,chunks:[],startTime:0,timerId:null,blob:null,mime:'',bitrate:3000000,photoMax:1600},
   pending:null, // {type:'video'|'image', blob, name, url}
   device:{tier:'medio', label:'Media', cores:4, mem:4, score:50}
 };
@@ -573,13 +573,17 @@ function detectarPotencia(){
   }catch(e){}
   score = Math.max(0, Math.min(100, score));
 
+  // Prioridad: calidad = rendimiento (fluidez primero; calidad alta solo si el móvil la aguanta)
   let tier, label, res, fps, bitrate, photoMax;
-  if(score >= 70){
-    tier='alto'; label='Alta'; res=1080; fps=60; bitrate=10000000; photoMax=2560;
-  } else if(score >= 40){
-    tier='medio'; label='Media'; res=720; fps=30; bitrate=5000000; photoMax=1920;
+  if(score >= 75){
+    // Gama alta: 720p/30 fluido por defecto (1080/60 queda como opción manual)
+    tier='alto'; label='Alta'; res=720; fps=30; bitrate=4500000; photoMax=1920;
+  } else if(score >= 45){
+    // Gama media: equilibrio
+    tier='medio'; label='Media'; res=720; fps=24; bitrate=3000000; photoMax=1600;
   } else {
-    tier='bajo'; label='Básica'; res=480; fps=24; bitrate=2500000; photoMax=1280;
+    // Gama baja: máximo rendimiento
+    tier='bajo'; label='Básica'; res=480; fps=24; bitrate=1800000; photoMax=1280;
   }
   state.device = {tier, label, cores, mem, score};
   state.rec.res = res;
@@ -671,10 +675,10 @@ async function selectImage(id){const img=state.images.find(i=>i.id===id);if(!img
 async function startCamera(){if(!state.processedBitmap){toast(t('selectImage'));return}document.getElementById('camPermOverlay').classList.add('active')}
 async function reallyStartCamera(){
   document.getElementById('camPermOverlay').classList.remove('active');
-  // Resolución de cámara según potencia del móvil
-  const camIdeal = state.device.tier==='alto' ? {w:1920,h:1080,fps:30}
-                 : state.device.tier==='medio' ? {w:1280,h:720,fps:30}
-                 : {w:854,h:480,fps:24};
+  // Cámara: priorizar fluidez del preview (calidad = rendimiento)
+  const camIdeal = state.device.tier==='alto' ? {w:1280,h:720,fps:30}
+                 : state.device.tier==='medio' ? {w:960,h:540,fps:24}
+                 : {w:640,h:480,fps:24};
   const constraints={audio:false,video:{facingMode:{ideal:state.camFacing},width:{ideal:camIdeal.w},height:{ideal:camIdeal.h},frameRate:{ideal:camIdeal.fps}}};
   try{
     const stream=await navigator.mediaDevices.getUserMedia(constraints);
@@ -780,20 +784,22 @@ async function startRecording(){
   lienzo.width=rw;lienzo.height=rh;
   const lctx=lienzo.getContext('2d',{alpha:false,desynchronized:true});
 
-  // FPS adaptativo: en dispositivos bajos no forzar 60
+  // FPS: tope según potencia (calidad = rendimiento)
   let fps=state.rec.fps;
-  if(state.device.tier==='bajo' && fps>30) fps=24;
-  if(state.device.tier==='medio' && fps>30) fps=30;
+  if(state.device.tier==='bajo') fps=Math.min(fps,24);
+  else if(state.device.tier==='medio') fps=Math.min(fps,30);
+  else fps=Math.min(fps,30); // incluso en alto, 30 por defecto es más estable al componer capas
+  if(fps===60 && state.device.tier!=='alto'){ fps=30; toast('60 fps limitado por rendimiento'); }
   state.rec.fps=fps;
 
   const stream=lienzo.captureStream(fps);
   state.rec.mime=mime;
   state.rec.chunks=[];
-  // Bitrate según resolución y potencia
-  let bitrate = state.rec.bitrate || 4000000;
-  if(res>=1080) bitrate = Math.max(bitrate, 8000000);
-  else if(res>=720) bitrate = Math.max(bitrate, 4000000);
-  else bitrate = Math.min(bitrate, 3000000);
+  // Bitrate moderado: suficiente calidad sin saturar CPU/GPU
+  let bitrate = state.rec.bitrate || 3000000;
+  if(res>=1080) bitrate = Math.min(Math.max(bitrate,5000000), 7000000);
+  else if(res>=720) bitrate = Math.min(Math.max(bitrate,2500000), 4500000);
+  else bitrate = Math.min(bitrate, 2000000);
   try{
     state.rec.recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:bitrate});
   }catch(e){state.rec.recorder=new MediaRecorder(stream)}
@@ -839,10 +845,9 @@ async function takePhoto(){
   // Flash + vibración (móvil)
   const fl=document.getElementById('flash');fl.classList.add('on');setTimeout(()=>fl.classList.remove('on'),80);
   if(navigator.vibrate)navigator.vibrate(30);
-  // Calidad JPEG adaptativa en dispositivos bajos (más rápido / menos peso)
-  const quality = state.device.tier==='bajo' ? 0.85 : 0.92;
-  const mime = state.device.tier==='bajo' ? 'image/jpeg' : 'image/png';
-  const blob=await new Promise(r=>c.toBlob(r, mime, quality));
+  // Foto: JPEG prioritario (más rápido y ligero); PNG solo si el usuario necesita transparencia (no aplica aquí)
+  const quality = state.device.tier==='alto' ? 0.88 : (state.device.tier==='medio' ? 0.82 : 0.75);
+  const blob=await new Promise(r=>c.toBlob(r, 'image/jpeg', quality));
   showDownload('image',blob);
 }
 
@@ -913,7 +918,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const tierEl = document.getElementById('deviceTierInfo');
   if(tierEl){
     const memTxt = navigator.deviceMemory ? ' · ~'+dev.mem+' GB RAM' : '';
-    tierEl.innerHTML = 'Tu móvil: potencia <strong>'+dev.label+'</strong> ('+dev.cores+' núcleos'+memTxt+') → calidad recomendada <strong>'+state.rec.res+'p / '+state.rec.fps+' fps</strong>. Puedes cambiarla abajo.';
+    tierEl.innerHTML = 'Tu móvil: potencia <strong>'+dev.label+'</strong> ('+dev.cores+' núcleos'+memTxt+') → equilibrio <strong>'+state.rec.res+'p / '+state.rec.fps+' fps</strong> (calidad = rendimiento). Puedes subirla, pero puede ir más lento.';
   }
   document.querySelectorAll('[data-res]').forEach(b=>{ b.classList.toggle('active', +b.dataset.res === state.rec.res); });
   document.querySelectorAll('[data-fps]').forEach(b=>{ b.classList.toggle('active', +b.dataset.fps === state.rec.fps); });
