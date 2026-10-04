@@ -27,26 +27,28 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;touch-action:manipulation}
 button,input,select{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
-button{min-height:44px;min-width:44px;border-radius:12px;transition:transform .15s,opacity .15s}
+button{min-height:48px;min-width:48px;border-radius:12px;transition:transform .15s,opacity .15s}
 button:active{transform:scale(.96)}
 button:disabled{opacity:.45;pointer-events:none}
 .screen{position:absolute;inset:0;display:none;flex-direction:column;padding-top:var(--safe-t);padding-bottom:var(--safe-b);overflow:hidden}
 .screen.active{display:flex}
-.header{display:flex;align-items:center;gap:10px;padding:10px 14px;flex-shrink:0}
+.header{display:flex;align-items:center;gap:10px;padding:12px 14px;flex-shrink:0}
 .header h1{font-size:1.15rem;font-weight:700;flex:1}
-.btn-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--card)}
-.btn-primary{background:var(--accent);color:#111;font-weight:700;padding:12px 20px;border-radius:14px}
-.btn-secondary{background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:14px}
+.btn-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:var(--card)}
+.btn-primary{background:var(--accent);color:#111;font-weight:700;padding:14px 22px;border-radius:16px;font-size:1rem}
+.btn-secondary{background:var(--card);border:1px solid var(--border);padding:14px 18px;border-radius:16px;font-size:.95rem}
 .btn-block{width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-danger{background:var(--danger);color:#fff;font-weight:600;padding:12px 18px;border-radius:14px}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 14px}
-.bottom-nav{display:flex;justify-content:space-around;padding:6px 0 calc(6px + var(--safe-b));background:var(--card);border-top:1px solid var(--border);flex-shrink:0}
-.bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68rem;opacity:.55;min-height:52px}
+.btn-danger{background:var(--danger);color:#fff;font-weight:600;padding:14px 18px;border-radius:16px}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px 16px;overscroll-behavior:contain}
+.bottom-nav{display:flex;justify-content:space-around;padding:8px 0 calc(8px + var(--safe-b));background:var(--card);border-top:1px solid var(--border);flex-shrink:0}
+.bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.7rem;opacity:.55;min-height:56px}
 .bottom-nav button.active{opacity:1;color:var(--accent)}
-.card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;border:1px solid var(--border)}
-.card-mode{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:20px 12px;cursor:pointer}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;border:1px solid var(--border)}
+.card-mode{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:22px 14px;cursor:pointer;min-height:140px;justify-content:center}
 .card-mode svg{width:72px;height:72px}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.device-tier{font-size:.72rem;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.06);margin-bottom:10px;line-height:1.4}
+.device-tier strong{color:var(--accent)}
 .logo{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .logo span{font-size:1.4rem;font-weight:800}
 .tagline{font-size:.9rem;opacity:.65;margin-bottom:16px}
@@ -75,20 +77,20 @@ select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border)
 .rec-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-.dock{position:absolute;bottom:calc(10px + var(--safe-b));left:10px;right:10px;z-index:30;display:flex;align-items:flex-end;justify-content:space-between;gap:6px;transition:opacity .3s,transform .3s}
+.dock{position:absolute;bottom:calc(12px + var(--safe-b));left:max(10px,var(--safe-l));right:max(10px,var(--safe-r));z-index:30;display:flex;align-items:flex-end;justify-content:space-between;gap:8px;transition:opacity .3s,transform .3s}
 .dock.dim{opacity:.12}
 .dock.hidden{opacity:0;pointer-events:none;transform:translateY(20px)}
-.dock-tabs{display:flex;gap:4px;background:rgba(15,16,20,.88);backdrop-filter:blur(14px);border-radius:18px;padding:6px;flex:1}
-.dock-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:14px;font-size:.65rem;color:rgba(255,255,255,.7);min-height:52px}
-.dock-tab.active{background:rgba(255,138,91,.2);color:var(--accent)}
-.dock-tab svg{width:22px;height:22px}
-.dock-shutter{width:64px;height:64px;border-radius:50%;background:#fff;border:4px solid var(--accent);flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(255,138,91,.25);position:relative}
+.dock-tabs{display:flex;gap:2px;background:rgba(15,16,20,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px;padding:6px;flex:1;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dock-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px;border-radius:14px;font-size:.62rem;color:rgba(255,255,255,.7);min-height:56px;min-width:52px}
+.dock-tab.active{background:rgba(255,138,91,.22);color:var(--accent)}
+.dock-tab svg{width:24px;height:24px}
+.dock-shutter{width:68px;height:68px;border-radius:50%;background:#fff;border:4px solid var(--accent);flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(255,138,91,.25);position:relative}
 .dock-shutter.recording{background:var(--danger);border-color:#fff;animation:pulse-rec 1.2s infinite}
 @keyframes pulse-rec{0%,100%{box-shadow:0 0 0 4px rgba(255,60,60,.3)}50%{box-shadow:0 0 0 10px rgba(255,60,60,.15)}}
 .dock-shutter .inner{width:28px;height:28px;border-radius:6px;background:var(--danger);transition:border-radius .2s}
 .dock-shutter:not(.recording) .inner{border-radius:50%;background:var(--accent)}
 
-.sheet{position:absolute;bottom:0;left:0;right:0;background:rgba(18,19,24,.96);backdrop-filter:blur(16px);border-radius:20px 20px 0 0;padding:12px 16px calc(16px + var(--safe-b));z-index:40;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:55vh;overflow-y:auto}
+.sheet{position:absolute;bottom:0;left:0;right:0;background:rgba(18,19,24,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px 22px 0 0;padding:10px 16px calc(18px + var(--safe-b));z-index:40;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:70vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .sheet.open{transform:translateY(0)}
 .sheet-handle{width:36px;height:4px;background:rgba(255,255,255,.25);border-radius:2px;margin:0 auto 8px}
 .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px}
@@ -395,9 +397,14 @@ select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border)
         <p>Solo el papel</p>
       </div>
     </div>
+    <div class="device-tier" id="deviceTierInfo">Detectando potencia del dispositivo…</div>
     <div class="row">
+      <button class="chip" data-res="480">480p</button>
       <button class="chip active" data-res="720">720p</button>
       <button class="chip" data-res="1080">1080p</button>
+    </div>
+    <div class="row">
+      <button class="chip" data-fps="24">24 fps</button>
       <button class="chip active" data-fps="30">30 fps</button>
       <button class="chip" data-fps="60">60 fps</button>
     </div>
@@ -405,7 +412,7 @@ select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border)
       <button class="btn-primary" id="btnStartRec" style="flex:1">● Grabar video</button>
       <button class="btn-secondary" id="btnTakePhoto" style="flex:1">📷 Foto</button>
     </div>
-    <p style="font-size:.72rem;opacity:.5;margin-top:8px">Los videos y fotos NO se guardan en la app. Se descargan o se borran.</p>
+    <p style="font-size:.72rem;opacity:.5;margin-top:8px">La calidad se elige según tu móvil. Puedes subirla manualmente si tu teléfono lo aguanta. Los archivos se descargan; no se guardan en la app.</p>
   </div>
 </div>
 
@@ -531,9 +538,56 @@ const state={
   guide:{x:0,y:0,scale:1,rotation:0,opacity:.5,locked:false,color:[255,0,0],visible:true,mirror:false},
   camStream:null,camFacing:'environment',frozen:false,gridOn:false,gridSize:3,wakeLock:null,lightBright:1,
   // Grabación
-  rec:{option:'guia',res:720,fps:30,active:false,paused:false,recorder:null,chunks:[],startTime:0,timerId:null,blob:null,mime:''},
-  pending:null // {type:'video'|'image', blob, name, url}
+  rec:{option:'guia',res:720,fps:30,active:false,paused:false,recorder:null,chunks:[],startTime:0,timerId:null,blob:null,mime:'',bitrate:4000000,photoMax:1920},
+  pending:null, // {type:'video'|'image', blob, name, url}
+  device:{tier:'medio', label:'Media', cores:4, mem:4, score:50}
 };
+
+/* ========== Detección de potencia del dispositivo ========== */
+function detectarPotencia(){
+  const cores = navigator.hardwareConcurrency || 4;
+  const mem = navigator.deviceMemory || 4; // GB, Chrome/Android
+  // Heurística de score (0-100)
+  let score = 0;
+  score += Math.min(cores, 8) * 6;          // hasta 48
+  score += Math.min(mem, 8) * 5;            // hasta 40
+  // Conexión (opcional, no afecta calidad local pero indica gama baja)
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if(conn && conn.saveData) score -= 10;
+  if(conn && conn.effectiveType === '2g') score -= 15;
+  // Pantalla alta resolución suele ir con hardware decente
+  if(window.devicePixelRatio >= 3) score += 5;
+  // WebGL renderer (muy aproximado)
+  try{
+    const c = document.createElement('canvas');
+    const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+    if(gl){
+      const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+      if(dbg){
+        const renderer = (gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)||'').toLowerCase();
+        if(/adreno 6|adreno 7|mali-g7|mali-g8|apple a1[5-9]|apple a[2-9]|xclipse|immortalis/.test(renderer)) score += 15;
+        else if(/adreno 5|mali-g5|mali-g6|apple a1[0-4]/.test(renderer)) score += 5;
+        else if(/adreno 3|adreno 4|mali-4|mali-t|swiftshader|llvmpipe/.test(renderer)) score -= 15;
+      }
+    }
+  }catch(e){}
+  score = Math.max(0, Math.min(100, score));
+
+  let tier, label, res, fps, bitrate, photoMax;
+  if(score >= 70){
+    tier='alto'; label='Alta'; res=1080; fps=60; bitrate=10000000; photoMax=2560;
+  } else if(score >= 40){
+    tier='medio'; label='Media'; res=720; fps=30; bitrate=5000000; photoMax=1920;
+  } else {
+    tier='bajo'; label='Básica'; res=480; fps=24; bitrate=2500000; photoMax=1280;
+  }
+  state.device = {tier, label, cores, mem, score};
+  state.rec.res = res;
+  state.rec.fps = fps;
+  state.rec.bitrate = bitrate;
+  state.rec.photoMax = photoMax;
+  return state.device;
+}
 
 /* ========== Utils ========== */
 function toast(msg,ms=2200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),ms)}
@@ -617,7 +671,11 @@ async function selectImage(id){const img=state.images.find(i=>i.id===id);if(!img
 async function startCamera(){if(!state.processedBitmap){toast(t('selectImage'));return}document.getElementById('camPermOverlay').classList.add('active')}
 async function reallyStartCamera(){
   document.getElementById('camPermOverlay').classList.remove('active');
-  const constraints={audio:false,video:{facingMode:{ideal:state.camFacing},width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:30}}};
+  // Resolución de cámara según potencia del móvil
+  const camIdeal = state.device.tier==='alto' ? {w:1920,h:1080,fps:30}
+                 : state.device.tier==='medio' ? {w:1280,h:720,fps:30}
+                 : {w:854,h:480,fps:24};
+  const constraints={audio:false,video:{facingMode:{ideal:state.camFacing},width:{ideal:camIdeal.w},height:{ideal:camIdeal.h},frameRate:{ideal:camIdeal.fps}}};
   try{
     const stream=await navigator.mediaDevices.getUserMedia(constraints);
     state.camStream=stream;const video=document.getElementById('videoCam');video.srcObject=stream;await video.play();
@@ -709,22 +767,35 @@ async function startRecording(){
   for(let n=3;n>=1;n--){cd.textContent=n;cd.classList.add('show');await new Promise(r=>setTimeout(r,700))}
   cd.classList.remove('show');
 
+  // Calidad según potencia (o elección manual del usuario)
   const res=state.rec.res;
   const video=document.getElementById('videoCam');
   const aspect=(video.videoWidth||16)/(video.videoHeight||9);
-  let rw=res===1080?1920:1280,rh=Math.round(rw/aspect);
-  if(res===1080&&rw>1920){rw=1920;rh=Math.round(rw/aspect)}
+  let rw = res>=1080 ? 1920 : (res>=720 ? 1280 : 854);
+  let rh = Math.round(rw/aspect);
+  // Limitar si el vídeo de cámara es más pequeño
+  if(video.videoWidth && rw > video.videoWidth){ rw=video.videoWidth; rh=video.videoHeight; }
 
   const lienzo=document.createElement('canvas');
   lienzo.width=rw;lienzo.height=rh;
   const lctx=lienzo.getContext('2d',{alpha:false,desynchronized:true});
 
-  const fps=state.rec.fps;
+  // FPS adaptativo: en dispositivos bajos no forzar 60
+  let fps=state.rec.fps;
+  if(state.device.tier==='bajo' && fps>30) fps=24;
+  if(state.device.tier==='medio' && fps>30) fps=30;
+  state.rec.fps=fps;
+
   const stream=lienzo.captureStream(fps);
   state.rec.mime=mime;
   state.rec.chunks=[];
+  // Bitrate según resolución y potencia
+  let bitrate = state.rec.bitrate || 4000000;
+  if(res>=1080) bitrate = Math.max(bitrate, 8000000);
+  else if(res>=720) bitrate = Math.max(bitrate, 4000000);
+  else bitrate = Math.min(bitrate, 3000000);
   try{
-    state.rec.recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:res===1080?8000000:4000000});
+    state.rec.recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:bitrate});
   }catch(e){state.rec.recorder=new MediaRecorder(stream)}
   state.rec.recorder.ondataavailable=e=>{if(e.data&&e.data.size)state.rec.chunks.push(e.data)};
   state.rec.recorder.onstop=()=>{
@@ -756,13 +827,22 @@ function pauseRecording(){if(!state.rec.recorder)return;if(state.rec.paused){sta
 
 async function takePhoto(){
   const video=document.getElementById('videoCam');
-  const w=video.videoWidth||1280,h=video.videoHeight||720;
+  let w=video.videoWidth||1280, h=video.videoHeight||720;
+  // Limitar resolución de foto según potencia del dispositivo
+  const maxSide = state.rec.photoMax || 1920;
+  if(Math.max(w,h) > maxSide){
+    const r = maxSide / Math.max(w,h);
+    w = Math.round(w*r); h = Math.round(h*r);
+  }
   const c=document.createElement('canvas');c.width=w;c.height=h;
   dibujarFotograma(c.getContext('2d'),w,h,state.rec.option);
-  // Flash
+  // Flash + vibración (móvil)
   const fl=document.getElementById('flash');fl.classList.add('on');setTimeout(()=>fl.classList.remove('on'),80);
   if(navigator.vibrate)navigator.vibrate(30);
-  const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+  // Calidad JPEG adaptativa en dispositivos bajos (más rápido / menos peso)
+  const quality = state.device.tier==='bajo' ? 0.85 : 0.92;
+  const mime = state.device.tier==='bajo' ? 'image/jpeg' : 'image/png';
+  const blob=await new Promise(r=>c.toBlob(r, mime, quality));
   showDownload('image',blob);
 }
 
@@ -770,7 +850,7 @@ function showDownload(type,blob){
   state.pending={type,blob,name:'',url:URL.createObjectURL(blob)};
   const now=new Date();
   const stamp=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0');
-  const ext=type==='video'?(state.rec.mime.includes('mp4')?'mp4':'webm'):'png';
+  const ext=type==='video'?(state.rec.mime&&state.rec.mime.includes('mp4')?'mp4':'webm'):(blob.type&&blob.type.includes('jpeg')?'jpg':'png');
   const name='trazoar-'+stamp+'.'+ext;
   state.pending.name=name;
   document.getElementById('dlName').value=name;
@@ -827,6 +907,16 @@ document.addEventListener('DOMContentLoaded',async()=>{
   document.querySelectorAll('.lang-switch button').forEach(b=>{b.classList.toggle('active',b.dataset.lang===lang);b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem('trazo_lang',lang);document.querySelectorAll('.lang-switch button').forEach(x=>x.classList.remove('active'));b.classList.add('active');applyI18n()}});
 
   await openDB();state.images=await loadAllImages();state.images.sort((a,b)=>b.date-a.date);renderRecent();renderGallery();
+
+  // Detectar potencia y aplicar calidad por defecto
+  const dev = detectarPotencia();
+  const tierEl = document.getElementById('deviceTierInfo');
+  if(tierEl){
+    const memTxt = navigator.deviceMemory ? ' · ~'+dev.mem+' GB RAM' : '';
+    tierEl.innerHTML = 'Tu móvil: potencia <strong>'+dev.label+'</strong> ('+dev.cores+' núcleos'+memTxt+') → calidad recomendada <strong>'+state.rec.res+'p / '+state.rec.fps+' fps</strong>. Puedes cambiarla abajo.';
+  }
+  document.querySelectorAll('[data-res]').forEach(b=>{ b.classList.toggle('active', +b.dataset.res === state.rec.res); });
+  document.querySelectorAll('[data-fps]').forEach(b=>{ b.classList.toggle('active', +b.dataset.fps === state.rec.fps); });
 
   if(!localStorage.getItem('trazo_tut')){document.getElementById('tutorialOverlay').classList.add('active');let step=0;const steps=document.querySelectorAll('.tut-step');document.getElementById('tutNext').onclick=()=>{if(step<2){steps[step].style.display='none';step++;steps[step].style.display='block';document.getElementById('tutPrev').style.display='block';if(step===2)document.getElementById('tutNext').textContent='Empezar'}else{document.getElementById('tutorialOverlay').classList.remove('active');localStorage.setItem('trazo_tut','1')}};document.getElementById('tutPrev').onclick=()=>{if(step>0){steps[step].style.display='none';step--;steps[step].style.display='block';document.getElementById('tutNext').textContent='Siguiente';if(step===0)document.getElementById('tutPrev').style.display='none'}}}
 
@@ -913,8 +1003,17 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   // Grabar sheet
   document.querySelectorAll('.opt-card').forEach(c=>{c.onclick=()=>{document.querySelectorAll('.opt-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');state.rec.option=c.dataset.opt}});
-  document.querySelectorAll('[data-res]').forEach(b=>{b.onclick=()=>{document.querySelectorAll('[data-res]').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.rec.res=+b.dataset.res}});
-  document.querySelectorAll('[data-fps]').forEach(b=>{b.onclick=()=>{document.querySelectorAll('[data-fps]').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.rec.fps=+b.dataset.fps}});
+  document.querySelectorAll('[data-res]').forEach(b=>{b.onclick=()=>{
+    document.querySelectorAll('[data-res]').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+    state.rec.res=+b.dataset.res;
+    if(state.device.tier==='bajo'&&state.rec.res>=1080) toast('1080p puede ir lento en este móvil');
+  }});
+  document.querySelectorAll('[data-fps]').forEach(b=>{b.onclick=()=>{
+    document.querySelectorAll('[data-fps]').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+    state.rec.fps=+b.dataset.fps;
+    if(state.device.tier==='bajo'&&state.rec.fps>=60) toast('60 fps puede ir lento en este móvil');
+    else if(state.device.tier==='medio'&&state.rec.fps>=60) toast('60 fps solo si tu móvil es potente');
+  }});
   document.getElementById('btnStartRec').onclick=()=>{document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open'));startRecording()};
   document.getElementById('btnTakePhoto').onclick=()=>{document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open'));takePhoto()};
   document.getElementById('btnShutter').onclick=()=>{if(state.rec.active)stopRecording();else{document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open'));document.getElementById('sheetGrabar').classList.add('open');document.querySelector('[data-sheet="grabar"]').classList.add('active')}};
