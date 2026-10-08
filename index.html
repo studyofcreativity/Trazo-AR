@@ -67,7 +67,10 @@ select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border)
 
 /* ===== MODO A ===== */
 #modeAScreen{background:#000}
-#videoCam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:none}
+#videoCam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:none;transform-origin:center center;transition:transform .2s ease;will-change:transform}
+.zoom-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.zoom-chip{padding:10px 12px;border-radius:20px;background:rgba(255,255,255,.08);font-size:.8rem;font-weight:600;border:1.5px solid transparent;min-width:56px;text-align:center}
+.zoom-chip.active{border-color:var(--accent);background:rgba(255,138,91,.18);color:var(--accent)}
 #guideCanvas,#gridCanvas,#drawOverlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:none}
 #editorCanvas{filter:none}
 #lightCanvas{filter:none}
@@ -357,6 +360,17 @@ select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border)
       <button class="chip" id="btnTorch" style="display:none">Linterna</button>
       <button class="chip" id="btnFreeze">Congelar</button>
     </div>
+    <label style="font-size:.8rem;display:block;margin-top:12px;margin-bottom:6px">Zoom de cámara</label>
+    <div class="zoom-row" id="zoomRow">
+      <button type="button" class="zoom-chip" data-zoom="0.25">0.25×</button>
+      <button type="button" class="zoom-chip" data-zoom="0.50">0.50×</button>
+      <button type="button" class="zoom-chip active" data-zoom="1.00">1.00×</button>
+      <button type="button" class="zoom-chip" data-zoom="1.50">1.50×</button>
+      <button type="button" class="zoom-chip" data-zoom="2.00">2.00×</button>
+      <button type="button" class="zoom-chip" data-zoom="2.50">2.50×</button>
+      <button type="button" class="zoom-chip" data-zoom="3.00">3.00×</button>
+    </div>
+    <p style="font-size:.72rem;opacity:.5;margin-top:8px">1.00× es el zoom normal. Valores bajos alejan; altos acercan.</p>
   </div>
 
   <div class="sheet" id="sheetGrabar">
@@ -519,7 +533,7 @@ const state={
   pendingMode:null, // 'A' | 'B' — forzar elegir imagen antes de entrar
   sourceBitmap:null,sourceW:0,sourceH:0,
   guide:{x:0,y:0,scale:1,rotation:0,opacity:.7,locked:false,color:[255,0,0],visible:true,mirror:false},
-  camStream:null,camFacing:'environment',frozen:false,gridOn:false,gridSize:3,wakeLock:null,lightBright:1,
+  camStream:null,camFacing:'environment',camZoom:1,frozen:false,gridOn:false,gridSize:3,wakeLock:null,lightBright:1,
   // Grabación
   rec:{option:'guia',res:720,fps:24,active:false,paused:false,recorder:null,chunks:[],startTime:0,timerId:null,blob:null,mime:'',bitrate:3000000,photoMax:1600},
   pending:null, // {type:'video'|'image', blob, name, url}
@@ -768,6 +782,7 @@ async function reallyStartCamera(){
     state.guide={x:0,y:0,scale:1,rotation:0,opacity:.7,locked:false,color:[255,0,0],visible:true,mirror:false};
     document.getElementById('sOpacity').value=70;
     if(typeof syncGuideSizeUI==='function')syncGuideSizeUI();
+    await setCameraZoom(1); // 1.00× predeterminado
     navigate('modeA');requestAnimationFrame(drawGuideLoop);
   }catch(err){
     console.error(err);let msg=t('noCam');
@@ -776,7 +791,48 @@ async function reallyStartCamera(){
     toast(msg);
   }
 }
-function stopCamera(){if(state.camStream){state.camStream.getTracks().forEach(t=>t.stop());state.camStream=null}if(state.wakeLock){try{state.wakeLock.release()}catch(e){}state.wakeLock=null}document.getElementById('videoCam').srcObject=null}
+function stopCamera(){
+  if(state.camStream){state.camStream.getTracks().forEach(t=>t.stop());state.camStream=null}
+  if(state.wakeLock){try{state.wakeLock.release()}catch(e){}state.wakeLock=null}
+  const video=document.getElementById('videoCam');
+  video.srcObject=null;
+  video.style.transform='';
+  state.camZoom=1;
+  document.querySelectorAll('.zoom-chip').forEach(b=>b.classList.toggle('active',+b.dataset.zoom===1));
+}
+
+/** Aplica zoom de cámara: 0.25× … 3.00× (1.00× = normal) */
+async function setCameraZoom(z){
+  z=Math.round(z*100)/100;
+  const allowed=[0.25,0.5,1,1.5,2,2.5,3];
+  // normalizar por si viene 0.50 / 1.00 como string
+  if(!allowed.includes(z)){
+    // elegir el más cercano
+    z=allowed.reduce((a,b)=>Math.abs(b-z)<Math.abs(a-z)?b:a);
+  }
+  state.camZoom=z;
+  document.querySelectorAll('.zoom-chip').forEach(b=>{
+    b.classList.toggle('active', Math.abs(+b.dataset.zoom-z)<0.001);
+  });
+  const video=document.getElementById('videoCam');
+  // Zoom digital por CSS (funciona en todos los móviles)
+  video.style.transform='scale('+z+')';
+  // Intentar zoom nativo del hardware si existe (mejor calidad al acercar)
+  try{
+    const track=state.camStream&&state.camStream.getVideoTracks()[0];
+    if(track&&track.getCapabilities){
+      const caps=track.getCapabilities();
+      if(caps.zoom){
+        const min=caps.zoom.min||1, max=caps.zoom.max||1;
+        const native=Math.max(min,Math.min(max,z));
+        // Solo aplicar nativo si el rango es útil; el CSS ya da el efecto visual
+        if(max>min){
+          await track.applyConstraints({advanced:[{zoom:native}]});
+        }
+      }
+    }
+  }catch(e){/* sin zoom nativo: solo CSS */}
+}
 
 function drawGuideLoop(){
   if(state.screen!=='modeA')return;
@@ -883,8 +939,22 @@ function dibujarFotograma(ctx,w,h,opcion){
   const video=document.getElementById('videoCam');
   ctx.filter='none';ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
   const vw=video.videoWidth||w,vh=video.videoHeight||h;
-  const scale=Math.max(w/vw,h/vh);const dw=vw*scale,dh=vh*scale;
-  ctx.drawImage(video,(w-dw)/2,(h-dh)/2,dw,dh);
+  const z=state.camZoom||1;
+  // Cover + zoom digital: recortar el centro según zoom
+  if(z>=1){
+    const cropW=vw/z, cropH=vh/z;
+    const sx=(vw-cropW)/2, sy=(vh-cropH)/2;
+    // dibujar el recorte a pantalla completa (cover)
+    const scale=Math.max(w/cropW,h/cropH);
+    const dw=cropW*scale, dh=cropH*scale;
+    ctx.drawImage(video,sx,sy,cropW,cropH,(w-dw)/2,(h-dh)/2,dw,dh);
+  }else{
+    // zoom out: imagen más pequeña centrada
+    const scale=Math.max(w/vw,h/vh)*z;
+    const dw=vw*scale, dh=vh*scale;
+    ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
+    ctx.drawImage(video,(w-dw)/2,(h-dh)/2,dw,dh);
+  }
   if(opcion==='guia'&&state.processedBitmap&&state.guide.visible){
     const g=state.guide;
     const vis=document.getElementById('videoCam').getBoundingClientRect();
@@ -1211,6 +1281,14 @@ document.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('btnSwitchCam').onclick=async()=>{state.camFacing=state.camFacing==='environment'?'user':'environment';stopCamera();await reallyStartCamera()};
   document.getElementById('btnTorch').onclick=async()=>{const track=state.camStream?.getVideoTracks()[0];if(!track)return;const caps=track.getCapabilities();if(caps.torch){const cur=track.getSettings().torch;await track.applyConstraints({advanced:[{torch:!cur}]})}};
   document.getElementById('btnFreeze').onclick=()=>{state.frozen=!state.frozen;const v=document.getElementById('videoCam');if(state.frozen)v.pause();else v.play()};
+  // Zoom de cámara: 0.25× … 3.00×
+  document.querySelectorAll('.zoom-chip').forEach(btn=>{
+    btn.onclick=()=>{
+      const z=parseFloat(btn.dataset.zoom);
+      setCameraZoom(z);
+      toast('Zoom '+z.toFixed(2)+'×');
+    };
+  });
 
   // Grabar sheet
   document.querySelectorAll('.opt-card').forEach(c=>{c.onclick=()=>{document.querySelectorAll('.opt-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');state.rec.option=c.dataset.opt}});
